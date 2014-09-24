@@ -1,0 +1,30 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+{% for event in event_details %}
+<h2>{{ title }} - {{ event.name }}.</h2>x
+
+    <div class="col-md-4">
+        <p>{{event.details}}</p>
+        <p>Location - <a href="/venues/detail/{{event.venue.id}}">At {{ event.venue.name }}</a></p>
+        <p>Date - <a href="/events/date/{{event.date.year}}/{{event.date.month}}/{{event.date.day}}">On {{ event.date|date:"F j, Y" }}</a></p>
+        <p>Time - Starts at {{event.date.time}}</p>
+        <h3>Prices</h3>
+
+        <div class="list-group">
+        {% for price in ticket_prices %}
+        <div class="list-group-item">
+            <div class="list-group-item-text">{{price.name}} - {{price.price}}</div>    
+        </div>         
+
+        {% endfor %}
+        </div>
+        
+    </div>
+
+{% endfor %}
+
+
+
+
+{% endblock %}
