@@ -129,6 +129,20 @@ def GetSerialNum(request):
                             print r
                             logToFile(str(r))
 
+                            file1 = open("serialnumbers.txt", "r")
+                            file2 = open("compare.txt", "r")
+                            file3 = open("results.txt", "w")
+                            list1 = file1.readlines()
+                            list2 = file2.readlines()
+                            file3.write("here: \n")
+                            for i in list1:
+                                for j in list2:
+                                    if  i == j:
+                                        print 'green'
+                                    else:
+                                        print 'Red'
+                                    r = file3.write(i)
+
             time.sleep(10)
             s.sendto(msg, ('239.255.255.250', 1900) )
 
