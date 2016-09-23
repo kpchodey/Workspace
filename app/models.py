@@ -1,71 +1,58 @@
 from django.db import models
 from django.contrib.auth.models import User
+
+
 # Create your models here.
 
-class Venue(models.Model):
+class Appium(models.Model):            #Appium
     name = models.CharField(max_length=30)
     details = models.TextField()
-    address1 = models.CharField(max_length=30)
-    address2 = models.CharField(max_length=30)
-    address3 = models.CharField(max_length=30, blank = True)
-    town = models.CharField(max_length=30)
-    postcode = models.CharField(max_length=10)
-    website = models.URLField()
-    image_url = models.URLField()
-    map_id = models.FloatField()
-    phone = models.IntegerField(max_length=11)
-    total_seats = models.IntegerField()
-    featured = models.BooleanField()
     def __str__(self):
         return self.name
-class Event(models.Model):
+    class Meta:
+        verbose_name_plural = "Appium"
+
+
+class Storm(models.Model):           #Storm
     name = models.CharField(max_length=30)
     details = models.TextField(blank = True)
     date = models.DateTimeField()
-    finish_time = models.TimeField()
-    total_seats = models.IntegerField()
-    seats_avalable = models.IntegerField()
-    venue = models.ForeignKey(Venue)
-    website = models.URLField(blank = True)
-    image_url = models.URLField(blank = True)
-    featured = models.BooleanField()
     def __str__(self):
         return self.name
-
-    def seats_free(self):
-        return self.total_seats - self.seats_taken
-
-
-class Price(models.Model):
-    name = models.CharField(max_length=30)
-    event = models.ForeignKey(Event)
-    notes = models.CharField(max_length=100, blank = True)
-    price = models.DecimalField(max_digits=7, decimal_places=2)
-    def __str__(self):
-        return (self.event.name +" - " + self.name)
-
-class Ticket(models.Model):
-    tOwner = models.OneToOneField(User)
-    tEvent = models.OneToOneField(Event)
-    tPrice = models.OneToOneField(Price)
-    def __str__(self):
-        return str(self.pk)
+    
+    class Meta:
+        verbose_name_plural = "Storm"
 
 
+class Revo(models.Model):           #Revo
+    id_test_result = models.CharField(max_length=30)
+    date = models.DateTimeField()
+    suite_name = models.CharField(max_length=30)
+    project_name = models.CharField(max_length=30)
+    test_case_id = models.CharField(max_length=30)
+    author = models.CharField(max_length=30)
+    tester = models.CharField(max_length=30)
+    box_type = models.CharField(max_length=30)
+    box_unit_adress = models.CharField(max_length=30)
+    box_ip = models.CharField(max_length=30)
+    total_actions = models.CharField(max_length=30)
+    toatl_conditions = models.CharField(max_length=30)
+    pass_numbers = models.CharField(max_length=30)
+    fail_numbers = models.CharField(max_length=30)
+    result = models.CharField(max_length=30)
+    execution_time = models.DateTimeField()
+    test_job_name = models.CharField(max_length=30)
+    test_job_executionid = models.CharField(max_length=30)
 
-class Person(models.Model):
-    user = models.OneToOneField(User)
-    tickets = models.ManyToManyField(Ticket)
-    DOB = models.DateField()
-    def __str__(self):
-        return str(self.user.Username)
+    class Meta:
+        verbose_name_plural = "Revo"
 
-    @property
-    def age(self):
-        from datetime import date
-        if (date.today() - self.DOB.replace(year=date.today().year)).days >= 0:
-            age = years
-        else:
-            age = years - 1
-        return age  
+class Set_Top_Box(models.Model):           #Set Top Box
+    Device_Type = models.CharField(max_length=30)
+    IP_Adress = models.CharField(max_length=30)
+    Model_Name = models.CharField(max_length=30)
+    Serial_Number = models.CharField(max_length=30)
+
+    class Meta:
+        verbose_name_plural = "Set Top Box"
 

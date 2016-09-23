@@ -3,13 +3,23 @@ from django.shortcuts import render
 from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
-from app.models import Price
-from app.forms import UserForm, UserProfileForm
+from app.models import Revo
+from app.forms import UserForm
+from app.models import Storm
+from app.models import Appium
+from app.models import Set_Top_Box
+from django.contrib.auth.decorators import login_required
+
+def view_report(request):
+    Serial_Number=request.POST.get('Serial_Number','default_value')
+    return render_to_response('url',{'app/layout.html':r})
+
+# @login_required
 def home(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        "app/index.html",
+        "app/layout.html",
         RequestContext(request,
         {
             "title":"Home Page",
@@ -17,214 +27,179 @@ def home(request):
         })
     )
 
-def contact(request):
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        "app/contact.html",
-        RequestContext(request,
-        {
-            "title":"Contact",
-            "message":"Your contact page.",
-            "year":datetime.now().year,
-        })
-    )
-
-def about(request):
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        "app/about.html",
-        RequestContext(request,
-        {
-            "title":"About",
-            "message":"Your application description page.",
-            "year":datetime.now().year,
-        })
-    )
 #################
-## Event Views ##
+## Revo Views ##
 #################
+# @login_required
+def Revo(request):
+    if request.method == 'GET':
+        import jenkins
+        import urllib2 
+        import urllib
 
-from app.models import Event
+        j = jenkins.Jenkins('http://localhost:8080', 'jenkins', 'jenkins123')
 
-def event_index(request):
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        "app/events/index.html",
-        RequestContext(request,
-        {
-            "title":"Events",
-            "year":datetime.now().year,
-        })
-    )
-def all_events(request):
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        "app/events/events_list.html",
-        RequestContext(request,
-        {
-            "title":"All Events",
-            "message":"Here is a list of all the event that they are. If you want to view upcoming events, then click on the currently non exsistent button below...",
-            "year":datetime.now().year,
-            "event_list": Event.objects.filter()
-        })
-    )
+        #Getting the list of plugins 
+        info = j.run_script("println(Jenkins.instance.pluginManager.plugins)")
+        print(info)
 
-def upcoming_events(request):
+        #'sample' is an existing job
+        #Fetch configuration details of this job
+        jobConfig = j.get_job_config('sample')
+        print(jobConfig)
+
+        #Replace contents of config file.'python connectivity.py' is replaced with 'python testing.py'.
+        shellCommand = jobConfig.replace('<command>python command#2.py</command>', '<command>cd C:\git_new\evo_automation\ tests\TestRunner\npython C:\git_new\evo_automation\ tests\TestRunner\TestRunner.py VMS_01 REG_AGREED_SUITE02 True\nC:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports\nC:\git_new\evo_automation\ tests\TestRunner\Test_Suite.json REG_AGREED_SUITE02 %BUILD_NUMBER%</command>')
+        j.reconfig_job('sample',shellCommand)
+        print(jobConfig)
+
+        #Build 'sample' jobq
+        j.build_job('sample')
+            
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        "app/events/events_list.html",
+        "app/layout.html",
         RequestContext(request,
         {
-            "title":"Upcoming Events",
-            "message":"All Upcoming Events",
+            "title":"Revo",
+            "message":"Stuff about revo goes here.",
             "year":datetime.now().year,
-            "event_list": Event.objects.filter(date__now>datetime.now()),
-        })
-    )
-def event_year(request, year):
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        "app/events/events_list.html",
-        RequestContext(request,
-        {
-            "title":"Events By year",
-            "message":"All Event's in " + year,
-            "year":datetime.now().year,
-            "event_year": year,
-            "event_list": Event.objects.filter(date__year=year)
-        })
-    )
-def event_month(request, year, month):
-    assert isinstance(request, HttpRequest)
-    event_list = Event.objects.filter(date__year=year)
-    event_list = event_list.filter(date__month=month)
-    return render(
-        request,
-        "app/events/events_list.html",
-        RequestContext(request,
-        {
-            "title":"Events By year",
-            "message":"All Event's in " + year + "-" + month,
-            "year":datetime.now().year,
-            "event_year": year,
-            "event_month":month,
-            "event_list": event_list
         })
     )
 
-def event_day(request, year, month, day):
+def GetSerialNum(request):
+    if request.method == 'GET':
+        import socket
+        import time
+        import string
+        import re
+        import urllib2
+        from xml.etree import ElementTree as ET
+        from xml.dom.minidom import parse
+        import os
+
+        print 'calling SETTOPBOX function'
+
+        msg = \
+            'M-SEARCH * HTTP/1.1\r\n' \
+            'HOST:239.255.255.250:1900\r\n' \
+            'MX:2\r\n' \
+            'MAN:ssdp:discover\r\n' \
+            'ST:urn:schemas-upnp-org:device:ManageableDevice:2\r\n'
+
+        # Set up UDP socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        s.settimeout(1000)
+        s.sendto(msg, ('239.255.255.250', 1900) )
+
+        try:
+            os.remove('serialnumbers.txt')
+        except OSError:
+            pass
+
+        def logToFile(logTxt):
+            logFile = open("serialnumbers.txt", "a+")
+            logFile.write(logTxt+"\n")
+            # print logTxt
+
+        def getCurrentTimeStamp():
+            return strftime("%Y-%m-%d %H:%M:%S")
+
+        try:
+            while True:
+                data, addr = s.recvfrom(65507)
+                mylist=data.split('\r')
+                url = re.findall('http?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', data)
+                print url[0]
+                response = urllib2.urlopen(url[0])
+                the_page = response.read()
+                # print the_page
+
+                tree = ET.XML(the_page)
+                with open("temp.xml", "w") as f:
+                    f.write(ET.tostring(tree))
+
+                document = parse('temp.xml')
+                actors = document.getElementsByTagName("ns0:serialNumber")
+                for act in actors:
+                    for node in act.childNodes:
+                        if node.nodeType == node.TEXT_NODE:
+                            r = "{}".format(node.data)
+                            print r
+                            logToFile(str(r))
+
+            time.sleep(10)
+            s.sendto(msg, ('239.255.255.250', 1900) )
+
+
+        except socket.timeout:
+            pass
+
     assert isinstance(request, HttpRequest)
-    event_list = Event.objects.filter(date__year=year)
-    event_list = event_list.filter(date__month=month)
-    event_list = event_list.filter(date__day=day)
     return render(
         request,
-        "app/events/events_list.html",
+        "app/layout.html",
         RequestContext(request,
         {
-            "title":"Events By year",
-            "message":"All Event's in " + year+"-"+month+"-"+day,
+            "title":"Revo",
+            "message":"Stuff about revo goes here.",
             "year":datetime.now().year,
-            "event_year": year,
-            "event_month":month,
-            "event_day":day,
-            "event_list": event_list
         })
     )
-def event_details(request, event_id):
+
+
+@login_required
+def Storm(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        "app/events/event_detail.html",
+        "app/Storm/Storm.html",
         RequestContext(request,
         {
-            "title":"Event Details",
-            "message":"test",
+            "title":"Storm",
+            "message":"Stuff about Storm goes here",
             "year":datetime.now().year,
-            "event_details": Event.objects.filter(id=event_id),
-            ##"booked_percentage":((Event.seats_avalable)/(Event.total_seats)+"%"),
-            "ticket_prices":(Price.objects.filter(event=event_id))
-
         })
     )
-
 
 #################
-## Venue Views ##
+## Appium Views ##
 #################
-
-from app.models import Venue
-
-def venue_index(request):
+# @login_required
+def Appium(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        "app/venues/index.html",
+        "app/Appium/Appium.html",
         RequestContext(request,
         {
-            "title":"Venues",
+            "title":"Appium",
+            "message":"Stuff about Appium goes here.",
             "year":datetime.now().year,
         })
     )
 
-def all_venues(request):
+def Reports(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        "app/venues/venue_list.html",
+        "app/Reports.html",
         RequestContext(request,
         {
-            "title":"All Venues",
-            "message":"Here is a list of all the venues that they are.",
+            "title":"Reports",
+            "message":"Stuff about Reports goes here.",
             "year":datetime.now().year,
-            "venue_list": Venue.objects.filter()
         })
     )
 
-def venue_details(request, venue_id):
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        "app/venues/venue_detail.html",
-        RequestContext(request,
-        {
-            "title":"Venue Details",
-            "message":"Detail for this venue thingy",
-            "year":datetime.now().year,
-            "venue_details": Venue.objects.filter(id=venue_id)
-        })
-    )
-def venue_events(request, venue_id):
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        "app/events/events_list.html",
-        RequestContext(request,
-        {
-            "title":"Events at venue",
-            "message":"A list of events at venue",
-            "year":datetime.now().year,
-            "event_list": Event.objects.filter(venue=venue_id)
-        })
-    )
 
 def register(request):
     context = RequestContext(request)
 
-    # A boolean value for telling the template whether the registration was successful.
-    # Set to False initially. Code changes value to True when registration succeeds.
     registered = False
 
-    # If it's a HTTP POST, we're interested in processing form data.
     if request.method == 'POST':
-        # Attempt to grab information from the raw form information.
-        # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm(data=request.POST)
 
@@ -233,31 +208,19 @@ def register(request):
             # Save the user's form data to the database.
             user = user_form.save()
 
-            # Now we hash the password with the set_password method.
-            # Once hashed, we can update the user object.
             user.set_password(user.password)
             user.save()
 
-            # Now sort out the UserProfile instance.
-            # Since we need to set the user attribute ourselves, we set commit=False.
-            # This delays saving the model until we're ready to avoid integrity problems.
+
             profile = profile_form.save(commit=False)
             profile.user = user
 
-            # Now we save the UserProfile model instance.
             profile.save()
 
-            # Update our variable to tell the template registration was successful.
             registered = True
 
-        # Invalid form or forms - mistakes or something else?
-        # Print problems to the terminal.
-        # They'll also be shown to the user.
         else:
             pass
-
-    # Not a HTTP POST, so we render our form using two ModelForm instances.
-    # These forms will be blank, ready for user input.
     else:
         user_form = UserForm()
         profile_form = UserProfileForm()
