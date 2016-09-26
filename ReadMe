@@ -1,0 +1,14 @@
+#Install Jenkins locally
+
+#Add local path to jenkins in .bash_profile if using mac
+
+#Edit the config file and remove username and password
+
+pip install -r requirements.txt
+
+chmod +x manage.py
+
+
+./manage.py syncdb
+./manage.py migrate
+./manage.py runserver
