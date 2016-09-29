@@ -1,0 +1,10 @@
+[
+	{"STBStatus": "1", "RouterSNo": "R1", "STBLabel": "Label1", "STBSno": "M11435TDS144"},
+	{"STBStatus": "1", "RouterSNo": "R1", "STBLabel": "Label2", "STBSno": "M11543TH4292"},
+	{"STBStatus": "0", "RouterSNo": "R1", "STBLabel": "STB always Red", "STBSno": "SN005"},
+	{"STBStatus": "1", "RouterSNo": "R1", "STBLabel": "Label3", "STBSno": "M11509TD9937"},
+	{"STBStatus": "1", "RouterSNo": "R1", "STBLabel": "Label4", "STBSno": "M11543TH4258"},
+	{"STBStatus": "0", "RouterSNo": "R1", "STBLabel": "Label5", "STBSno": "SN005"},
+	{"STBStatus": "0", "RouterSNo": "R1", "STBLabel": "Label6", "STBSno": "SN006"},
+	{"STBStatus": "0", "RouterSNo": "R1", "STBLabel": "Label7", "STBSno": "SN007"}
+]
