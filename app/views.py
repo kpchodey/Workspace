@@ -59,7 +59,7 @@ def Revo(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        "app/layout.html",
+        "app/login.html",
         RequestContext(request,
         {
             "title":"Revo",
@@ -129,19 +129,61 @@ def GetSerialNum(request):
                             print r
                             logToFile(str(r))
 
-                            file1 = open("serialnumbers.txt", "r")
-                            file2 = open("compare.txt", "r")
-                            file3 = open("results.txt", "w")
-                            list1 = file1.readlines()
-                            list2 = file2.readlines()
-                            file3.write("here: \n")
-                            for i in list1:
-                                for j in list2:
-                                    if  i == j:
-                                        print 'green'
+########            Start              #########
+                            import csv
+                            import json
+
+                            f = open("compare.txt", "r")
+                            reader = csv.reader(f)
+
+                            data = open("temp1.csv", "wb")
+                            w = csv.writer(data)
+                            for row in reader:
+                                my_row = []
+                                my_row.append(row[0])
+                                w.writerow(my_row)
+                            data.close()
+
+                            with open('temp1.csv', 'r') as file1:
+                                with open('serialnumbers.txt', 'r') as file2:
+                                    same = set(file1).intersection(file2)
+                                    print same
+
+                            with open('results.csv', 'w') as file_out:
+                                for line in same:
+                                    file_out.write(line)
+                                    print line
+                                    
+
+                            with open('results.csv', 'rb') as f:
+                                reader = csv.reader(f)
+                                result_list = []
+                                for row in reader:
+                                    result_list.extend(row)
+
+
+                            with open('compare.txt', 'rb') as f:
+                                reader = csv.reader(f)
+                                sample_list = []
+                                for row in reader:
+                                    if row[0] in result_list:
+                                        sample_list.append(row + [1])
                                     else:
-                                        print 'Red'
-                                    r = file3.write(i)
+                                        sample_list.append(row + [0])
+
+                            with open('sample_output.csv', 'wb') as f:
+                                writer = csv.writer(f)
+                                writer.writerows(sample_list)
+                                print 
+
+                            f = open( 'sample_output.csv', 'r' )
+                            jsonfile = open('app/templates/app/temp1.json', 'w')
+                            reader = csv.DictReader( f, fieldnames = ( "STBSno","STBLabel","RouterSNo","STBStatus" ) ) 
+                            out = "[\n\t" + ",\n\t".join([json.dumps(row) for row in reader]) + "\n]"
+                            jsonfile.write(out) 
+       
+
+###             end         #######
 
             time.sleep(10)
             s.sendto(msg, ('239.255.255.250', 1900) )
@@ -207,6 +249,18 @@ def Reports(request):
         })
     )
 
+
+def Json(request):
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        #"app/STBSampleJson.json",
+        "app/temp1.json",
+        RequestContext(request,
+        {
+
+        })
+    )
 
 def register(request):
     context = RequestContext(request)

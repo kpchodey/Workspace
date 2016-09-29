@@ -17,6 +17,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{% static 'app/scripts/script.js' %}"></script> 
 </head> 
+<!-- ***********************Veera****************** -->
+<body onload="stbststus()">
+<!-- ***********************Veera****************** -->  
 
 <form id="upf" action="{% url 'Revo' %}" method="GET">
 <body>
@@ -71,44 +74,19 @@
         <span class="pull-right"><img src="{% static 'app/images/settopbox.png' %}"></span>
       </p>  
       <hr>
-  <form id="upf" action="{% url 'Set_Top_Box' %}" method="GET">
-    <a href="{% url 'Set_Top_Box' %}">
-    <label class="radio activetab">
-    <input type="radio" name="optradio">VMS_01
-    <i class="fa fa-circle pull-right available" aria-hidden="true"></i>
-    </label>
-     <hr>
-   </a>
 
-     <a href="{% url 'Set_Top_Box' %}">  
-    <label class="radio">
-    <input type="radio" name="optradio">VMS_02
-    <i class="fa fa-circle pull-right offline" aria-hidden="true"></i>
-    </label>
-     <hr>
-   </a>
+  <!-- ***********************Veera****************** -->
 
-    <a href="{% url 'Set_Top_Box' %}">
-    <label class="radio">
-    <input type="radio" name="optradio">VMS_JENKINS_01
-    <i class="fa fa-circle pull-right available" aria-hidden="true"></i>
-    </label>
-     <hr>
-   </a>
-
-    <a href="{% url 'Set_Top_Box' %}">
-     <label class="radio">
-    <input type="radio" name="optradio">VMS_JENKINS_02
-    <i class="fa fa-circle pull-right available" aria-hidden="true"></i>
-    </label>
-     <hr> 
-   </a>
-   <div class="wrapper">
-     <div class="buttonHolder">
-    <p><a href="Set_Top_Box" class="btn btn-primary btn-large">Get Settopbox Status &raquo;</a></p>
-</div>
-   </div>
+  <form class="quote-text scroller" id="STBStatus"> 
   </form>  
+
+  <!-- ***********************Veera****************** -->
+   <div class="wrapper">
+   <div class="buttonHolder">
+   <p><a href="Set_Top_Box" class="btn btn-primary btn-large">Get Settopbox Status &raquo;</a></p>
+   </div>
+  </div>
+<!--   </form> -->  
     </div>
 </div>
 
@@ -322,6 +300,29 @@
         </div>
     </footer>
   </form>
+<!-- ***********************Veera****************** -->
+<script>
+ 
+   function stbststus(){
+        $.getJSON("Json", function(result){
+          $("#STBStatus").empty();
+            $.each(result, function(i, item){  
+              if(item.STBStatus == "0"){
+                colorclass = "available"
+              }
+              if(item.STBStatus == "1"){
+                colorclass = "offline"
+              }
+              if(item.STBStatus == "2"){
+                colorclass = "In use"
+              }
+                $("#STBStatus").append("<label class='radio'><input type='radio' name='optradio'  class='optradio'>"+item.STBLabel +"   <i class='fa fa-circle pull-right  "+colorclass+"' aria-hidden='true'></i></label> <hr>");
+            });
+        });
+   } 
+
+</script>
+<!-- ***********************Veera****************** -->
 
 </body>
 </html>

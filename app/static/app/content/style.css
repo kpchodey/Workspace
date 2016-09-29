@@ -15,27 +15,6 @@ body  {
     background-repeat: no-repeat;
    
 }
-
-.available{
-  color: #228B22;
-}
-.offline{
-  color: #cd040b;
-}
-
-i.indication{
-  margin: 3px -20px;
-}
-i.fa.fa-circle.available{
-  color: #228B22;
-}
-i.fa.fa-circle.offline{
-  color: #cd040b;
-}
-i.fa.fa-circle.inuse{
-  color: #ffffff;
-}
-
 .subpages{
     padding-top: 70px;
 }
@@ -46,9 +25,21 @@ i.fa.fa-circle.inuse{
 }   
 .carousel-inner {
     height: 100%;
-	width:100%;
+  width:100%;
 
 }
+
+.available{
+  color: #228B22;
+}
+.offline{
+  color: #cd040b
+}
+
+.In.use{
+  color:#F9FF00;
+}
+
 
 /* Background images are set within the HTML using inline CSS, not here */
 
@@ -119,7 +110,7 @@ span.pull-right>img {
     margin-top: -3px;
 }
 .navbar-inverse .navbar-nav>li>a:hover,.navbar-inverse .navbar-nav>li>a:active{
-color: #cc040b;	
+color: #cc040b; 
 }
 .navbar-nav{ 
 text-transform:inherit;

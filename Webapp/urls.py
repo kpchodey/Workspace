@@ -39,6 +39,11 @@ urlpatterns = patterns("",
     url(r"^Storm", "app.views.Storm", name="Storm"),
     
 
+## Json"s
+
+    url(r"^Json", "app.views.Json", name="Json"),
+
+
 ## Appium's
     url(r"^Appium", "app.views.Appium", name="Appium"),
 
