@@ -78,8 +78,11 @@ def GetSerialNum(request):
         from xml.etree import ElementTree as ET
         from xml.dom.minidom import parse
         import os
+<<<<<<< HEAD
         import csv
         import json
+=======
+>>>>>>> 04684ef4711243b78093430c26e543707ff1fa8b
 
         print 'calling SETTOPBOX function'
 
@@ -131,6 +134,7 @@ def GetSerialNum(request):
                             print r
                             logToFile(str(r))
 
+<<<<<<< HEAD
                             # file1 = open("serialnumbers.txt", "r")
                             # file2 = open("compare.txt", "r")
                             # file3 = open("results.txt", "w")
@@ -210,6 +214,21 @@ def GetSerialNum(request):
        
 
 ###             end         #######
+=======
+                            file1 = open("serialnumbers.txt", "r")
+                            file2 = open("compare.txt", "r")
+                            file3 = open("results.txt", "w")
+                            list1 = file1.readlines()
+                            list2 = file2.readlines()
+                            file3.write("here: \n")
+                            for i in list1:
+                                for j in list2:
+                                    if  i == j:
+                                        print 'green'
+                                    else:
+                                        print 'Red'
+                                    r = file3.write(i)
+>>>>>>> 04684ef4711243b78093430c26e543707ff1fa8b
 
             time.sleep(10)
             s.sendto(msg, ('239.255.255.250', 1900) )
@@ -275,6 +294,7 @@ def Reports(request):
         })
     )
 
+<<<<<<< HEAD
 def Json(request):
     assert isinstance(request, HttpRequest)
     return render(
@@ -287,6 +307,8 @@ def Json(request):
         })
     )
 
+=======
+>>>>>>> 04684ef4711243b78093430c26e543707ff1fa8b
 
 def register(request):
     context = RequestContext(request)

@@ -15,6 +15,30 @@ body  {
     background-repeat: no-repeat;
    
 }
+<<<<<<< HEAD
+=======
+
+.available{
+  color: #228B22;
+}
+.offline{
+  color: #cd040b;
+}
+
+i.indication{
+  margin: 3px -20px;
+}
+i.fa.fa-circle.available{
+  color: #228B22;
+}
+i.fa.fa-circle.offline{
+  color: #cd040b;
+}
+i.fa.fa-circle.inuse{
+  color: #ffffff;
+}
+
+>>>>>>> 04684ef4711243b78093430c26e543707ff1fa8b
 .subpages{
     padding-top: 70px;
 }
@@ -29,6 +53,7 @@ body  {
 
 }
 
+<<<<<<< HEAD
 .available{
   color: #228B22;
 }
@@ -41,6 +66,8 @@ body  {
 }
 
 
+=======
+>>>>>>> 04684ef4711243b78093430c26e543707ff1fa8b
 /* Background images are set within the HTML using inline CSS, not here */
 
 .fill {

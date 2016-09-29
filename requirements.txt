@@ -1,6 +1,10 @@
 coverage==4.2
 Django==1.8
 Pillow==2.3.0
+<<<<<<< HEAD
+=======
+psycopg2==2.5.4
+>>>>>>> 04684ef4711243b78093430c26e543707ff1fa8b
 pyflakes==1.2.3
 python-jenkins==0.4.13
 six==1.10.0

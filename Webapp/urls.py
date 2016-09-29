@@ -38,10 +38,13 @@ urlpatterns = patterns("",
 
     url(r"^Storm", "app.views.Storm", name="Storm"),
     
+<<<<<<< HEAD
 ## Json"s
 
     url(r"^Json", "app.views.Json", name="Json"),
 
+=======
+>>>>>>> 04684ef4711243b78093430c26e543707ff1fa8b
 
 ## Appium's
     url(r"^Appium", "app.views.Appium", name="Appium"),
