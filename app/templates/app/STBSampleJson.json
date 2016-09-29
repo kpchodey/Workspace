@@ -1,7 +1,38 @@
-{"STBStatus": 1, "RouterSNo": "Router#1", "STBLabel": "STB#1", "STBSno": "M11435TDS144"},
-{"STBStatus": 1, "RouterSNo": "Router#1", "STBLabel": "STB#2", "STBSno": "M11543TH4292"},
-{"STBStatus": 1, "RouterSNo": "Router#1", "STBLabel": "STB#3", "STBSno": "M11509TD9937"},
-{"STBStatus": 0, "RouterSNo": "Router#1", "STBLabel": "STB#4", "STBSno": "M11543TH4258"}
-
-
-
+[
+     {
+      "STB": "STB1",
+      "STBSno": "M1101",
+      "STBLabel": "STB1",
+      "RouterSNo": "G1A001",
+      "STBStatus": "1"
+    },
+     {
+      "STB": "STB2",
+      "STBSno": "M1102",
+      "STBLabel": "STB2",
+      "RouterSNo": "G1A001",
+      "STBStatus": "2"
+    },
+     {
+      "STB": "STB3",
+      "STBSno": "M1103",
+      "STBLabel": "STB3",
+      "RouterSNo": "G1A001",
+      "STBStatus": "0"
+    },
+      {
+      "STB": "STB4",
+      "STBSno": "M1101",
+      "STBLabel": "STB4",
+      "RouterSNo": "G1A002",
+      "STBStatus": "1"
+    }, 
+	
+	  {
+      "STB": "STB5",
+      "STBSno": "M1101",
+      "STBLabel": "STB5",
+      "RouterSNo": "G1A002",
+      "STBStatus": "2"
+    } 
+]

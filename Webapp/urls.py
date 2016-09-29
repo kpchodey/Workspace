@@ -37,7 +37,7 @@ urlpatterns = patterns("",
 ## Storm"s
 
     url(r"^Storm", "app.views.Storm", name="Storm"),
-    
+
 
 ## Json"s
 

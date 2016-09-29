@@ -59,7 +59,7 @@ def Revo(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        "app/login.html",
+        "app/layout.html",
         RequestContext(request,
         {
             "title":"Revo",
@@ -78,6 +78,8 @@ def GetSerialNum(request):
         from xml.etree import ElementTree as ET
         from xml.dom.minidom import parse
         import os
+        import csv
+        import json
 
         print 'calling SETTOPBOX function'
 
@@ -249,7 +251,6 @@ def Reports(request):
         })
     )
 
-
 def Json(request):
     assert isinstance(request, HttpRequest)
     return render(
@@ -261,6 +262,7 @@ def Json(request):
 
         })
     )
+
 
 def register(request):
     context = RequestContext(request)
