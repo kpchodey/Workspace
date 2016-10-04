@@ -1,42 +1,40 @@
-<ns0:root xmlns:ns0="urn:schemas-upnp-org:device-1-0">
- <ns0:specVersion>
-  <ns0:major>1</ns0:major>
-  <ns0:minor>0</ns0:minor>
- </ns0:specVersion>
- <ns0:device>
-  <ns0:deviceType>urn:schemas-upnp-org:device:ManageableDevice:2</ns0:deviceType>
-  <ns0:friendlyName>ARRIS Manageable Device</ns0:friendlyName>
-  <ns0:manufacturer>ARRIS</ns0:manufacturer>
-  <ns0:manufacturerURL>http://www.arris.com</ns0:manufacturerURL>
-  <ns0:modelDescription>Device Management</ns0:modelDescription>
-  <ns0:modelName>VMS1100</ns0:modelName>
-  <ns0:modelNumber>VMS1100</ns0:modelNumber>
-  <ns0:modelURL>http://www.arris.com</ns0:modelURL>
-  <ns0:serialNumber>M11509TD9937</ns0:serialNumber>
-  <ns0:UDN>uuid:21a3a358-1dd2-11b2-986b-3cdfa93ff69c</ns0:UDN>
-  <ns0:UPC />
-  <ns0:serviceList>
-   <ns0:service>
-    <ns0:serviceType>urn:schemas-upnp-org:service:BasicManagement:2</ns0:serviceType>
-    <ns0:serviceId>urn:upnp-org:serviceId:BasicManagement</ns0:serviceId>
-    <ns0:SCPDURL>/XD/21a3a358-1dd2-11b2-986b-3cdfa93ff69c/BasicMgmt</ns0:SCPDURL>
-    <ns0:controlURL>/UD/21a3a358-1dd2-11b2-986b-3cdfa93ff69c?0</ns0:controlURL>
-    <ns0:eventSubURL>/21a3a358-1dd2-11b2-986b-3cdfa93ff69c?0</ns0:eventSubURL>
-   </ns0:service>
-   <ns0:service>
-    <ns0:serviceType>urn:schemas-upnp-org:service:ConfigurationManagement:2</ns0:serviceType>
-    <ns0:serviceId>urn:upnp-org:serviceId:ConfigurationManagement</ns0:serviceId>
-    <ns0:SCPDURL>/XD/21a3a358-1dd2-11b2-986b-3cdfa93ff69c/CfgMgmt</ns0:SCPDURL>
-    <ns0:controlURL>/UD/21a3a358-1dd2-11b2-986b-3cdfa93ff69c?1</ns0:controlURL>
-    <ns0:eventSubURL>/21a3a358-1dd2-11b2-986b-3cdfa93ff69c?1</ns0:eventSubURL>
-   </ns0:service>
-   <ns0:service>
-    <ns0:serviceType>urn:schemas-upnp-org:service:DeviceProtection:1</ns0:serviceType>
-    <ns0:serviceId>urn:upnp-org:serviceId:DeviceProtection</ns0:serviceId>
-    <ns0:SCPDURL>/XD/21a3a358-1dd2-11b2-986b-3cdfa93ff69c/DevProt</ns0:SCPDURL>
-    <ns0:controlURL>/UD/21a3a358-1dd2-11b2-986b-3cdfa93ff69c?3</ns0:controlURL>
-    <ns0:eventSubURL>/21a3a358-1dd2-11b2-986b-3cdfa93ff69c?3</ns0:eventSubURL>
-   </ns0:service>
-  </ns0:serviceList>
-  <ns0:presentationURL />
- </ns0:device>
+<project>
+  <actions />
+  <description />
+  <keepDependencies>false</keepDependencies>
+  <properties />
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.5.3">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/thirumalrajsekar/workspacce.git</url>
+        <credentialsId>demo</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list" />
+    <extensions />
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers />
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>Ashish - C:\git_new\evo_automation\ tests\TestRunner
+VMS_01
+[]
+True 
+C:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers />
+  <buildWrappers />
+</project>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 
 # Create your models here.
@@ -25,27 +26,19 @@ class Storm(models.Model):           #Storm
 
 
 class Revo(models.Model):           #Revo
-    id_test_result = models.CharField(max_length=30)
-    date = models.DateTimeField()
-    suite_name = models.CharField(max_length=30)
-    project_name = models.CharField(max_length=30)
-    test_case_id = models.CharField(max_length=30)
-    author = models.CharField(max_length=30)
-    tester = models.CharField(max_length=30)
-    box_type = models.CharField(max_length=30)
-    box_unit_adress = models.CharField(max_length=30)
-    box_ip = models.CharField(max_length=30)
-    total_actions = models.CharField(max_length=30)
-    toatl_conditions = models.CharField(max_length=30)
-    pass_numbers = models.CharField(max_length=30)
-    fail_numbers = models.CharField(max_length=30)
-    result = models.CharField(max_length=30)
-    execution_time = models.DateTimeField()
-    test_job_name = models.CharField(max_length=30)
-    test_job_executionid = models.CharField(max_length=30)
+    SuiteName = models.CharField(max_length=255)
+    Test_Case = models.CharField(max_length=255)
+    FileName = models.CharField(max_length=255)
+    Total_Action = models.CharField(max_length=255)
+    Pass = models.CharField(max_length=255)
+    Fail = models.CharField(max_length=255)
+    Exe_Time = models.CharField(max_length=255)
+    Result = models.CharField(max_length=255)
+    create_date = models.DateTimeField(default=datetime.datetime.now)
 
     class Meta:
         verbose_name_plural = "Revo"
+
 
 class Set_Top_Box(models.Model):           #Set Top Box
     Device_Type = models.CharField(max_length=30)
@@ -55,4 +48,14 @@ class Set_Top_Box(models.Model):           #Set Top Box
 
     class Meta:
         verbose_name_plural = "Set Top Box"
+
+
+class Test_Suite(models.Model):
+    Test_Suite_Name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name_plural = "Test Suite"
+
+    def __unicode__(self):
+            return self.Test_Suite_Name
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 {% load staticfiles %}
@@ -82,48 +82,13 @@
       <form class="quote-text scroller" id="STBStatus"> 
   </form> 
   
-  <!-- ***********************Veera****************** -->
 
-<!--
-  <form id="upf" action="{% url 'Set_Top_Box' %}" method="GET">
-    <a href="{% url 'Set_Top_Box' %}">
-    <label class="radio activetab">
-    <input type="radio" name="optradio">VMS_01
-    <i class="fa fa-circle pull-right available" aria-hidden="true"></i>
-    </label>
-     <hr>
-   </a> 
-
-     <a href="{% url 'Set_Top_Box' %}">  
-    <label class="radio">
-    <input type="radio" name="optradio">VMS_02
-    <i class="fa fa-circle pull-right offline" aria-hidden="true"></i>
-    </label>
-     <hr>
-   </a>
-
-    <a href="{% url 'Set_Top_Box' %}">
-    <label class="radio">
-    <input type="radio" name="optradio">VMS_JENKINS_01
-    <i class="fa fa-circle pull-right available" aria-hidden="true"></i>
-    </label>
-     <hr>
-   </a>
-
-    <a href="{% url 'Set_Top_Box' %}">
-     <label class="radio">
-    <input type="radio" name="optradio">VMS_JENKINS_02
-    <i class="fa fa-circle pull-right available" aria-hidden="true"></i>
-    </label>
-     <hr> 
-   </a>
-   -->
    <div class="wrapper">
-     <div class="buttonHolder">
+     <div class="buttonHolder" onclick="pageload()">
     <p><a href="Set_Top_Box" class="btn btn-primary btn-large">Get Settopbox Status &raquo;</a></p>
 </div>
    </div>
-  </form>  
+  </form>
   
     </div>
 </div>
@@ -200,12 +165,12 @@
 
 <div class="col-md-3"> 
         <div class="quote-box runquote">  
-          <script type="text/javascript"> 
-          function show_alert() 
-          { 
-          alert("Run Successful!"); 
-          } 
-          </script> 
+          <script type="text/javascript">
+          function show_alert()
+          {
+          alert("Run Successful!");
+          }
+          </script>
           <a href="{% url 'Revo' %}">          
           <!-- <input type="button" onclick="show_alert()" value="Run &raquo;" /> -->
           <img src="{% static 'app/images/run.png' %}" onclick="show_alert()" class="runbutton">
@@ -342,9 +307,10 @@
 <script>
  
    function stbststus(){
+    show_alert()
       $.getJSON("Json", function(result){
           $("#STBStatus").empty();
-            $.each(result, function(i, item){  
+            $.each(result, function(i, item){
               if(item.STBStatus == "1"){
                 colorclass = "available"
               }
@@ -357,7 +323,7 @@
                 $("#STBStatus").append("<label class='radio'><input type='radio' name='optradio'  class='optradio'>"+item.STBLabel +"   <i class='fa fa-circle pull-right  "+colorclass+"' aria-hidden='true'></i></label> <hr>");
             });
         });
-   } 
+   }
 
 </script>
 <!-- ***********************Veera****************** -->
