@@ -30,7 +30,7 @@
     <hudson.tasks.Shell>
       <command>Ashish - C:\git_new\evo_automation\ tests\TestRunner
 VMS_01
-[]
+REG_AGREED_SUITE02
 True 
 C:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports</command>
     </hudson.tasks.Shell>
