@@ -5,14 +5,17 @@ from django.template import RequestContext
 from datetime import datetime
 from app.models import Revo
 from app.forms import UserForm
+from app.forms import NameForm
 from app.models import Storm
 from app.models import Appium
 from app.models import Set_Top_Box
 from django.contrib.auth.decorators import login_required
+import jenkins
+import urllib2
+import urllib
+from xml.etree import ElementTree as ET
+from xml.dom.minidom import parse
 
-def view_report(request):
-    Serial_Number=request.POST.get('Serial_Number','default_value')
-    return render_to_response('url',{'app/layout.html':r})
 
 # @login_required
 def home(request):
@@ -27,76 +30,61 @@ def home(request):
         })
     )
 
+
 #################
 ## Revo Views ##
 #################
 # @login_required
 def Revo(request):
-    if request.method == 'GET':
-        import jenkins
-        import urllib2
-        import urllib
-        from xml.etree import ElementTree as ET
-        from xml.dom.minidom import parse
+    if request.method == 'POST':
+        form = NameForm(request.POST)
+    else:
+        form = NameForm()
+    print request.POST.getlist('checks')
 
-        cd1 = "<command>"
-        cd2 = "</command>"
-        test_runner_path = "Ashish - C:\git_new\evo_automation\ tests\TestRunner"
-        test_runner_path2 = "Negi - C:\git_new\evo_automation\ tests\TestRunner"
-        STB = "VMS_01"
-        TestSuite = "REG_AGREED_SUITE02"
-        report_location = "C:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports"
-        j = jenkins.Jenkins('http://localhost:8080', 'jenkins', 'jenkins123')
+    form = NameForm(request.POST)
+    list1 = request.POST.getlist('checks')
+    cd1 = "<command>"
+    cd2 = "</command>"
+    test_runner_path = "Ashish - C:\git_new\evo_automation\ tests\TestRunner"
+    test_runner_path2 = "Negi - C:\git_new\evo_automation\ tests\TestRunner"
+    STB = "VMS_01"
 
-        mycommand1 = cd1 + test_runner_path + "\n" + STB + "\n" + TestSuite + "\nTrue \n" + report_location + cd2
-        mycommand2 = cd1 + test_runner_path2 + "\n" + STB + "\n" + TestSuite + "\nTrue \n" + report_location + cd2
-        mycommand3 = cd1 + "super" + cd2
-        # print mycommand
+    TestSuite = ', '.join(list1)
+    TestSuite1 = "REG_AGREED_SUITE02"
+    report_location = "C:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports"
+    j = jenkins.Jenkins('http://localhost:8080', 'jenkins', 'jenkins123')
 
-        # Getting the list of plugins
-        info = j.run_script("println(Jenkins.instance.pluginManager.plugins)")
-        # print(info)
+    mycommand1 = cd1 + test_runner_path + "\n" + STB + "\n" + TestSuite1 + "\nTrue \n" + report_location + cd2
+    mycommand2 = cd1 + test_runner_path2 + "\n" + STB + "\n" + TestSuite + "\nTrue \n" + report_location + cd2
+    mycommand3 = cd1 + "super" + cd2
+    print "mycommand1",mycommand1
+    print "mycommand2",mycommand2
 
-        jobConfig = j.get_job_config('sample')
+    jobConfig = j.get_job_config('sample')
 
-        tree = ET.XML(jobConfig)
-        with open("temp.xml", "w") as f:
-            f.write(ET.tostring(tree))
+    tree = ET.XML(jobConfig)
+    with open("temp.xml", "w") as f:
+        f.write(ET.tostring(tree))
 
-        document = parse('temp.xml')
-        actors = document.getElementsByTagName("command")
+    document = parse('temp.xml')
+    actors = document.getElementsByTagName("command")
 
-        for act in actors:
-            for node in act.childNodes:
-                if node.nodeType == node.TEXT_NODE:
-                    r = "{}".format(node.data)
-                    print r
+    for act in actors:
+        for node in act.childNodes:
+            if node.nodeType == node.TEXT_NODE:
+                r = "{}".format(node.data)
 
-        prev_command = cd1 + r + cd2
-        print prev_command
-
-        # print(jobConfig)
+    prev_command = cd1 + r + cd2
 
 
-        shellCommand = jobConfig.replace(prev_command, mycommand1)
-        j.reconfig_job('sample', shellCommand)
+    shellCommand = jobConfig.replace(prev_command, mycommand2)
+    j.reconfig_job('sample', shellCommand)
 
-        # print(jobConfig)
 
-        # Build 'sample' jobq
-        j.build_job('sample')
+    j.build_job('sample')
 
-    assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        "app/layout.html",
-        RequestContext(request,
-        {
-            "title":"Revo",
-            "message":"Stuff about revo goes here.",
-            "year":datetime.now().year,
-        })
-    )
+    return render(request, 'app/layout.html', {'form': form})
 
 
 def GetSerialNum(request):
@@ -138,22 +126,17 @@ def GetSerialNum(request):
             logFile.write(logTxt + "\n")
             # print logTxt
 
-        # def getCurrentTimeStamp():
-        #   return strftime("%Y-%m-%d %H:%M:%S")
-
         count = 0
         try:
             while True:
                 count = count + 1
                 data, addr = s.recvfrom(65507)
 
-                # print "getdefaulttimeout",s.getdefaulttimeout()
                 mylist = data.split('\r')
                 url = re.findall('http?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', data)
                 print url[0]
                 response = urllib2.urlopen(url[0])
                 the_page = response.read()
-                # print the_page
 
                 tree = ET.XML(the_page)
                 with open("temp.xml", "w") as f:

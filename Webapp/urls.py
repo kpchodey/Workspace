@@ -38,17 +38,9 @@ urlpatterns = patterns("",
 
     url(r"^Storm", "app.views.Storm", name="Storm"),
 
-
-    # url(r"^abc", "app.views.my_view", name="abc"),
-
-
 ## Json"s
 
     url(r"^Json", "app.views.Json", name="Json"),
-
-
-# url(r'^add_testsuite', "app.views.add_testsuite", name="add_testsuite"),
-
 
 ## Appium's
     url(r"^Appium", "app.views.Appium", name="Appium"),
@@ -81,10 +73,5 @@ urlpatterns = patterns("",
 
     url(r"^user/register/$", "app.views.register", name="register"),
 
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r"^admin/doc/", include("django.contrib.admindocs.urls")),
-
-    # Uncomment the next line to enable the admin:
     url(r"^admin/", include(admin.site.urls)),
 )

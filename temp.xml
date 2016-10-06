@@ -28,9 +28,9 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>Ashish - C:\git_new\evo_automation\ tests\TestRunner
+      <command>Negi - C:\git_new\evo_automation\ tests\TestRunner
 VMS_01
-REG_AGREED_SUITE02
+REG_AGREED_SUITE02, REG_AGREED_SUITE03, REG_AGREED_SUITE04
 True 
 C:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports</command>
     </hudson.tasks.Shell>

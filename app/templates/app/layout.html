@@ -20,9 +20,8 @@
 
 <form id="upf" action="{% url 'Revo' %}" method="GET">
 
-<!-- ***********************Veera****************** -->
-<body onload="stbststus()">
-<!-- ***********************Veera****************** -->  
+
+<body onload="stbststus()"> 
 
 
 <div class="container mainpage">
@@ -76,8 +75,6 @@
         <span class="pull-right"><img src="{% static 'app/images/settopbox.png' %}"></span>
       </p>  
       <hr>
-
-<!-- ***********************Veera****************** -->
     
       <form class="quote-text scroller" id="STBStatus"> 
   </form> 
@@ -93,6 +90,8 @@
     </div>
 </div>
 
+<form action="{% url 'Revo' %}" method="post">
+{% csrf_token %}
 <div class="col-md-3"> 
             <div class="quote-box"> 
   <p class="quotation-mark">
@@ -100,87 +99,54 @@
         <span class="pull-right"><img src="{% static 'app/images/suite.png' %}"></span>
       </p>  
       <hr>
-      <form class="quote-text scroller">
-    <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="1">REG_AGREED_SUITE01
+  <label class="checkbox">
+    <input type="checkbox" name="checks" value="REG_AGREED_SUITE01">REG_AGREED_SUITE01
     </label>
      <hr>
     <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="2">REG_AGREED_SUITE02
+    <input type="checkbox" name="checks" value="REG_AGREED_SUITE02">REG_AGREED_SUITE02
     </label>
      <hr>
     <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="3">REG_AGREED_SUITE03
+    <input type="checkbox" name="checks" value="REG_AGREED_SUITE03">REG_AGREED_SUITE03
     </label>
      <hr>
     <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="4">REG_AGREED_SUITE04
+    <input type="checkbox" name="checks" value="REG_AGREED_SUITE04">REG_AGREED_SUITE04
     </label>
      <hr>
     <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="5">REG_AGREED_SUITE05
+    <input type="checkbox" name="checks" value="REG_AGREED_SUITE05">REG_AGREED_SUITE05
     </label>
      <hr>
     <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="6">GENERAL_EVO_SCRIPTS
-    </label>
-     <hr> <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="7">PC_PUR_EVO_SCRIPTS
+    <input type="checkbox" name="checks" value="GENERAL_EVO_SCRIPTS">GENERAL_EVO_SCRIPTS
     </label>
      <hr>
-    <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="8">CLR_PIN_PC_PUR_EVO_SCRIPTS
-    </label>
-     <hr>
-    <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="9">SUITE01_REGSCRIPTS
-    </label>
-     <hr>
-    <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="10">SUITE02_REGSCRIPTS
-    </label>
-     <hr>
-    <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="11">SUITE03_REGSCRIPTS
-    </label>
-     <hr>
-    <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="12">SUITE04_REGSCRIPTS
-    </label>
-     <hr>
-    <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="13">SUITE05_REGSCRIPTS
-    </label>
-     <hr>
-    <label class="checkbox">
-    <input type="checkbox" name="checks[]" value="14">SAMPLE_TEST_SUITE
-    </label>
-    <hr>
- 
-
-  </form>   
+  
       </div>
 </div>
-<form id="upf" action="{% url 'Revo' %}" method="GET">
 
 <div class="col-md-3"> 
         <div class="quote-box runquote">  
+          
+
           <script type="text/javascript">
           function show_alert()
           {
           alert("Run Successful!");
           }
           </script>
-          <a href="{% url 'Revo' %}">          
-          <!-- <input type="button" onclick="show_alert()" value="Run &raquo;" /> -->
-          <img src="{% static 'app/images/run.png' %}" onclick="show_alert()" class="runbutton">
-          </a> 
+
+          <input type="image" name="submit" img src="{% static 'app/images/run.png' %}" alt="Submit" />
         </div>
 </div>
 
 </div>
-    </div>
-  <div class="container secondcontainer">
+</div>
+</form>
+
+<div class="container secondcontainer">
 <div class="row">
   <div class="col-md-12 divsub" > 
        <div class="below-box"> 
@@ -303,7 +269,7 @@
         </div>
     </footer>
   </form>
-<!-- ***********************Veera****************** -->
+
 <script>
  
    function stbststus(){
@@ -324,8 +290,8 @@
             });
         });
    }
-
 </script>
-<!-- ***********************Veera****************** -->
+
+
 </body>
 </html>

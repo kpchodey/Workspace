@@ -1,10 +1,10 @@
 from django import forms
+from django.forms import ModelForm
 import csv
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-from app.models import Test_Suite
-
+from app.models import Test_Suite, Set_Top_Box,  Revo
 
 
 class BootstrapAuthenticationForm(AuthenticationForm):
@@ -27,22 +27,5 @@ class UserForm(forms.ModelForm):
         fields = ("username", "email", "password")
 
 
-class TestSuiteForm(forms.ModelForm):
-    name = forms.CharField(max_length=128, help_text="Please enter the title of the page.")
-
-    class Meta:
-        # Provide an association between the ModelForm and a model
-        model = Test_Suite
-        fields = ("Test_Suite_Name",)
-
-
-DISPLAY_CHOICES = (
-    ("1", "REG_AGREED_SUITE01"),
-    ("2", "REG_AGREED_SUITE02")
-)
-
-class RevoForm(forms.ModelForm):
-    class Meta:
-      model = Test_Suite
-      fields = ['Test_Suite_Name']
-    # checks = forms.ChoiceField(widget=forms.RadioSelect, choices=DISPLAY_CHOICES)
+class NameForm(forms.Form):
+    print "I am in forms"
