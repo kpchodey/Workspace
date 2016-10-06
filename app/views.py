@@ -15,6 +15,16 @@ import urllib2
 import urllib
 from xml.etree import ElementTree as ET
 from xml.dom.minidom import parse
+import socket
+import time
+import string
+import re
+from xml.etree import ElementTree as ET
+from xml.dom.minidom import parse
+import os
+import io
+import csv
+import json
 
 
 # @login_required
@@ -41,24 +51,29 @@ def Revo(request):
     else:
         form = NameForm()
     print request.POST.getlist('checks')
+    print request.POST.getlist('check1')
 
     form = NameForm(request.POST)
+    stb1 = request.POST.getlist('check1')
     list1 = request.POST.getlist('checks')
     cd1 = "<command>"
     cd2 = "</command>"
     test_runner_path = "Ashish - C:\git_new\evo_automation\ tests\TestRunner"
     test_runner_path2 = "Negi - C:\git_new\evo_automation\ tests\TestRunner"
-    STB = "VMS_01"
+    # request.POST.getlist('check1')
+
+    STB = ', '.join(stb1)
 
     TestSuite = ', '.join(list1)
-    TestSuite1 = "REG_AGREED_SUITE02"
+    # TestSuite1 = "REG_AGREED_SUITE02"
     report_location = "C:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports"
     j = jenkins.Jenkins('http://localhost:8080', 'jenkins', 'jenkins123')
 
-    mycommand1 = cd1 + test_runner_path + "\n" + STB + "\n" + TestSuite1 + "\nTrue \n" + report_location + cd2
+    # mycommand1 = cd1 + test_runner_path + "\n" + STB + "\n" + TestSuite1 + "\nTrue \n" + report_location + cd2
     mycommand2 = cd1 + test_runner_path2 + "\n" + STB + "\n" + TestSuite + "\nTrue \n" + report_location + cd2
     mycommand3 = cd1 + "super" + cd2
-    print "mycommand1",mycommand1
+    # print "mycommand1",mycommand1
+
     print "mycommand2",mycommand2
 
     jobConfig = j.get_job_config('sample')
@@ -89,17 +104,6 @@ def Revo(request):
 
 def GetSerialNum(request):
     if request.method == 'GET':
-        import socket
-        import time
-        import string
-        import re
-        import urllib2
-        from xml.etree import ElementTree as ET
-        from xml.dom.minidom import parse
-        import os
-        import io
-        import csv
-        import json
 
         print 'calling SETTOPBOX function'
         i = 0
@@ -155,9 +159,6 @@ def GetSerialNum(request):
 
         except socket.timeout:
             pass
-
-        import csv
-        import json
 
         f = open("compare.txt", "r")
         reader = csv.reader(f)

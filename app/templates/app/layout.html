@@ -18,10 +18,8 @@
     <script src="{% static 'app/scripts/script.js' %}"></script> 
 </head> 
 
-<form id="upf" action="{% url 'Revo' %}" method="GET">
 
-
-<body onload="stbststus()"> 
+<body onload="stbststus()">
 
 
 <div class="container mainpage">
@@ -67,6 +65,11 @@
     </div>
 </div>
 
+
+
+<form action="{% url 'Revo' %}" method="post">
+{% csrf_token %}
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css"/>
 <div class="col-md-3"> 
      <div class="quote-box">  
@@ -75,23 +78,22 @@
         <span class="pull-right"><img src="{% static 'app/images/settopbox.png' %}"></span>
       </p>  
       <hr>
-    
-      <form class="quote-text scroller" id="STBStatus"> 
-  </form> 
-  
+
+<Div class="quote-text scroller" id="STBStatus">
+  </Div>
+
 
    <div class="wrapper">
      <div class="buttonHolder" onclick="pageload()">
     <p><a href="Set_Top_Box" class="btn btn-primary btn-large">Get Settopbox Status &raquo;</a></p>
 </div>
    </div>
-  </form>
+
   
     </div>
 </div>
 
-<form action="{% url 'Revo' %}" method="post">
-{% csrf_token %}
+
 <div class="col-md-3"> 
             <div class="quote-box"> 
   <p class="quotation-mark">
@@ -129,34 +131,31 @@
 
 <div class="col-md-3"> 
         <div class="quote-box runquote">  
-          
-
           <script type="text/javascript">
           function show_alert()
           {
           alert("Run Successful!");
           }
           </script>
-
           <input type="image" name="submit" img src="{% static 'app/images/run.png' %}" alt="Submit" />
         </div>
-</div>
-
-</div>
-</div>
+    </div>
 </form>
+    </div>
+</div>
 
-<div class="container secondcontainer">
+<!--test summary starts-->
+<<div class="container secondcontainer">
 <div class="row">
-  <div class="col-md-12 divsub" > 
-       <div class="below-box"> 
+  <div class="col-md-12 divsub" >
+       <div class="below-box">
       <p class="quotation-mark2">
         Test Summary
         <span class="pull-right"><img src="{% static 'app/images/test.png' %}"></span>
-      </p>  
-    
+      </p>
+
       <div class="panel panel-default">
-        
+
         <table class="table table-fixed">
           <thead >
             <tr>
@@ -182,9 +181,9 @@
        <td style="font-size:95%;" class=" col-xs-2"><p>9/22/2016  9:00:00 AM</p></td>
        <td style="font-size:95%;" class=" col-xs-2"><p>9/22/2016  9:10:00 AM</p></td>
        <td style="font-size:95%;" class="col-xs-2"> <span class="testreportsuccess testreport">Completed</span></td>
-          
+
             </tr>
-            
+
             <tr>
        <td style="font-size:95%;" class=" col-xs-2"><p>Test Suite #2</p></td><td style="font-size:95%;" class=" col-xs-2"><p>Test Case #1</p></td>
        <td style="font-size:95%;" class=" col-xs-2"><p>STB#1</p></td>
@@ -213,7 +212,7 @@
        <td style="font-size:95%;" class=" col-xs-2"><p>9/22/2016  9:10:00 AM</p></td>
       <td style="font-size:95%;" class="col-xs-2"> <span class="testreportwar testreport"> Not Tested</span></td>
             </tr>
-            
+
         <tr>
        <td style="font-size:95%;" class=" col-xs-2"><p>Test Suite #5</p></td>
        <td style="font-size:95%;" class=" col-xs-2"><p>Test Case #4</p></td>
@@ -222,8 +221,8 @@
        <td style="font-size:95%;" class=" col-xs-2"><p>9/22/2016  9:10:00 AM</p></td>
        <td style="font-size:95%;" class="col-xs-2"><span class="testreportfailed testreport">Test Failed</span></td>
             </tr>
-            
-      
+
+
       <tr>
              <td style="font-size:95%;" class=" col-xs-2"><p>Test Suite #5</p></td>
        <td style="font-size:95%;" class=" col-xs-2"><p>Test Case #5</p></td>
@@ -232,7 +231,7 @@
        <td style="font-size:95%;" class=" col-xs-2"><p>9/22/2016  9:10:00 AM</p></td>
        <td style="font-size:95%;" class="col-xs-2"> <span class="testreportsuccess testreport">Completed</span></td>
             </tr>
-    
+
 
       <tr>
              <td style="font-size:95%;" class=" col-xs-2"><p>Test Suite #5</p></td>
@@ -242,7 +241,7 @@
        <td style="font-size:95%;" class=" col-xs-2"><p>9/22/2016  9:10:00 AM</p></td>
        <td style="font-size:95%;" class="col-xs-2"> <span class="testreportsuccess testreport">Completed</span></td>
             </tr>
-      
+
       <tr>
              <td style="font-size:95%;" class=" col-xs-2"><p>Test Suite #5</p></td>
        <td style="font-size:95%;" class=" col-xs-2"><p>Test Case #1</p></td>
@@ -251,14 +250,16 @@
        <td style="font-size:95%;" class=" col-xs-2"><p>9/22/2016  9:10:00 AM</p></td>
        <td style="font-size:95%;" class="col-xs-2"> <span class="testreportsuccess testreport">Completed</span></td>
             </tr>
-            
+
           </tbody>
         </table>
-      </div> 
+      </div>
     </div>
-</div> 
+</div>
   </div>
   </div>
+
+<!--test summary ends-->
       <footer id="footer">
         <div class="container">
             <div class="row">
@@ -268,12 +269,10 @@
             </div>
         </div>
     </footer>
-  </form>
+
 
 <script>
- 
    function stbststus(){
-    show_alert()
       $.getJSON("Json", function(result){
           $("#STBStatus").empty();
             $.each(result, function(i, item){
@@ -286,7 +285,7 @@
               if(item.STBStatus == "2"){
                 colorclass = "In use"
               }
-                $("#STBStatus").append("<label class='radio'><input type='radio' name='optradio'  class='optradio'>"+item.STBLabel +"   <i class='fa fa-circle pull-right  "+colorclass+"' aria-hidden='true'></i></label> <hr>");
+                $("#STBStatus").append("<label class='checkbox'><input type='checkbox' name='check1' value='"+item.STBLabel+"'>" +item.STBLabel +"   <i class='fa fa-circle pull-right  "+colorclass+"' aria-hidden='true'></i></label> <hr>");
             });
         });
    }
