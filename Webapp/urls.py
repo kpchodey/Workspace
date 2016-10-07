@@ -42,6 +42,7 @@ urlpatterns = patterns("",
 
     url(r"^Json", "app.views.Json", name="Json"),
 
+
 ## Appium's
     url(r"^Appium", "app.views.Appium", name="Appium"),
 

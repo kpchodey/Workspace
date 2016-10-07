@@ -51,10 +51,10 @@ def Revo(request):
     else:
         form = NameForm()
     print request.POST.getlist('checks')
-    print request.POST.getlist('check1')
+    print request.POST.getlist('optradio')
 
     form = NameForm(request.POST)
-    stb1 = request.POST.getlist('check1')
+    stb1 = request.POST.getlist('optradio')
     list1 = request.POST.getlist('checks')
     cd1 = "<command>"
     cd2 = "</command>"
@@ -250,6 +250,33 @@ def Appium(request):
             "year":datetime.now().year,
         })
     )
+
+# def importdb(request):
+    
+#     f = open('data.csv', 'r')  
+#     for line in f:
+#         line =  line.split(",")
+#         tmp = Revo()
+#         tmp.SuiteName = line[0]
+#         tmp.Test_Case = line[1]
+#         tmp.FileName = line[2]
+#         tmp.Total_Action = line[4]
+#         tmp.Pass = line[5]
+#         tmp.Fail = line[6]
+#         tmp.Exe_Time = line[7]
+#         tmp.Result = line[8]
+#         tmp.save()
+
+#     f.close()
+#     assert isinstance(request, HttpRequest)
+#     return render(
+#         request,
+#         "app/layout.html",
+#         RequestContext(request,
+#         {
+#             "title":"CSV",
+#         })
+#     )
 
 def Reports(request):
     assert isinstance(request, HttpRequest)

@@ -285,7 +285,7 @@
               if(item.STBStatus == "2"){
                 colorclass = "In use"
               }
-                $("#STBStatus").append("<label class='checkbox'><input type='checkbox' name='check1' value='"+item.STBLabel+"'>" +item.STBLabel +"   <i class='fa fa-circle pull-right  "+colorclass+"' aria-hidden='true'></i></label> <hr>");
+                $("#STBStatus").append("<label class='radio'><input type='radio' name='optradio' value='"+item.STBLabel+"'>" +item.STBLabel +"   <i class='fa fa-circle pull-right  "+colorclass+"' aria-hidden='true'></i></label> <hr>");
             });
         });
    }
