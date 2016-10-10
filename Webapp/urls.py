@@ -52,4 +52,7 @@ urlpatterns = patterns("",
 ## Report's
     url(r"^Reports", "app.views.Reports", name="Reports"),
 
+##Admin
+    url(r"^admin/", include(admin.site.urls)),
+
 )
