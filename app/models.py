@@ -2,10 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 
-
-# Create your models here.
-
-class Appium(models.Model):            #Appium
+class Appium(models.Model):            
     name = models.CharField(max_length=30)
     details = models.TextField()
     def __str__(self):
@@ -14,7 +11,7 @@ class Appium(models.Model):            #Appium
         verbose_name_plural = "Appium"
 
 
-class Storm(models.Model):           #Storm
+class Storm(models.Model):           
     name = models.CharField(max_length=30)
     details = models.TextField(blank = True)
     date = models.DateTimeField()
@@ -25,7 +22,7 @@ class Storm(models.Model):           #Storm
         verbose_name_plural = "Storm"
 
 
-class Revo(models.Model):           #Revo
+class Revo(models.Model):           
     SuiteName = models.CharField(max_length=255)
     Test_Case = models.CharField(max_length=255)
     FileName = models.CharField(max_length=255)
@@ -40,7 +37,7 @@ class Revo(models.Model):           #Revo
         verbose_name_plural = "Revo"
 
 
-class Set_Top_Box(models.Model):           #Set Top Box
+class Set_Top_Box(models.Model):           
     Device_Type = models.CharField(max_length=30)
     IP_Adress = models.CharField(max_length=30)
     Model_Name = models.CharField(max_length=30)

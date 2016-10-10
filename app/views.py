@@ -101,7 +101,6 @@ def Revo(request):
 
     return render(request, 'app/layout.html', {'form': form})
 
-
 def GetSerialNum(request):
     if request.method == 'GET':
 
@@ -160,7 +159,7 @@ def GetSerialNum(request):
         except socket.timeout:
             pass
 
-        f = open("compare.txt", "r")
+        f = open("Reference_File.txt", "r")
         reader = csv.reader(f)
 
         data = open("temp1.csv", "wb")
@@ -187,7 +186,7 @@ def GetSerialNum(request):
             for row in reader:
                 result_list.extend(row)
 
-        with open('compare.txt', 'rb') as f:
+        with open('Reference_File.txt', 'rb') as f:
             reader = csv.reader(f)
             sample_list = []
             for row in reader:
