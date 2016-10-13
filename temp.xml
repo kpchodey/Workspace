@@ -28,9 +28,10 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>Negi - C:\git_new\evo_automation\ tests\TestRunner
-STB#8
-REG_AGREED_SUITE01, REG_AGREED_SUITE02, REG_AGREED_SUITE03, REG_AGREED_SUITE04, REG_AGREED_SUITE05, GENERAL_EVO_SCRIPTS
+      <command>cd C:\git_new\evo_automation\ tests\TestRunner
+wbfiwe
+STB#3
+REG_AGREED_SUITE03, REG_AGREED_SUITE04, REG_AGREED_SUITE05, GENERAL_EVO_SCRIPTS
 True 
 C:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports</command>
     </hudson.tasks.Shell>

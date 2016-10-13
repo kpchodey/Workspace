@@ -4,7 +4,7 @@ import csv
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-from app.models import Test_Suite, Set_Top_Box,  Revo
+from app.models import Test_Suite, Set_Top_Box, Revo, racktestresult
 
 
 class BootstrapAuthenticationForm(AuthenticationForm):
@@ -29,3 +29,11 @@ class UserForm(forms.ModelForm):
 
 class NameForm(forms.Form):
     print "I am in forms"
+
+# class racktestresultTimeForm(forms.ModelForm):
+
+#     class Meta:
+#         model = racktestresult
+#         widgets = {
+#             'Date': forms.DateInput(attrs={'class':'datepicker'}),
+#         }

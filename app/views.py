@@ -3,12 +3,8 @@ from django.shortcuts import render
 from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
-from app.models import Revo
-from app.forms import UserForm
-from app.forms import NameForm
-from app.models import Storm
-from app.models import Appium
-from app.models import Set_Top_Box
+from app.forms import UserForm, NameForm
+from app.models import Storm, Appium, Revo, Set_Top_Box, racktestresult
 from django.contrib.auth.decorators import login_required
 import jenkins
 import urllib2
@@ -25,6 +21,12 @@ import os
 import io
 import csv
 import json
+from chartit import DataPool, Chart
+from chartit.chartdata import DataPool
+import json as simplejson
+from chartit import DataPool, Chart
+from django.db.models import Avg
+from chartit import PivotDataPool, PivotChart
 
 
 # @login_required
@@ -40,12 +42,11 @@ def home(request):
         })
     )
 
-
 #################
 ## Revo Views ##
 #################
 # @login_required
-def Revo(request):
+def Revo_view(request):
     if request.method == 'POST':
         form = NameForm(request.POST)
     else:
@@ -58,8 +59,7 @@ def Revo(request):
     list1 = request.POST.getlist('checks')
     cd1 = "<command>"
     cd2 = "</command>"
-    test_runner_path = "Ashish - C:\git_new\evo_automation\ tests\TestRunner"
-    test_runner_path2 = "Negi - C:\git_new\evo_automation\ tests\TestRunner"
+    test_runner_path2 = "cd C:\git_new\evo_automation\ tests\TestRunner"
     # request.POST.getlist('check1')
 
     STB = ', '.join(stb1)
@@ -100,6 +100,8 @@ def Revo(request):
     j.build_job('sample')
 
     return render(request, 'app/layout.html', {'form': form})
+
+
 
 def GetSerialNum(request):
     if request.method == 'GET':
@@ -250,45 +252,121 @@ def Appium(request):
         })
     )
 
-# def importdb(request):
+
+def reports_chart_view(request):
+
+    #Column Chart 1   
+    ds = DataPool(
+       series=
+        [{'options': {
+            'source': racktestresult.objects.all()},
+          'terms': [
+            'TotalConditions',
+            'BoxType',
+            'Result',
+            'PassNumbers',
+            'idTestResult',
+            'ExecutionTime',
+            'TestCaseID', 
+            'FailNumbers']}
+         ])
+
+    cht= Chart(
+        datasource = ds, 
+        series_options = 
+          [{'options':{
+              'type': 'column',
+              'stacking': True},
+            'terms':{
+              'TestCaseID': [
+                'PassNumbers',
+                'FailNumbers']
+              }}],
+        chart_options = 
+          {'title': {
+               'text': 'Test Cases (Pass/Fail)'},
+           'xAxis': {
+                'title': {
+                   'text': 'Test Case Name'}}})
+
     
-#     f = open('data.csv', 'r')  
-#     for line in f:
-#         line =  line.split(",")
-#         tmp = Revo()
-#         tmp.SuiteName = line[0]
-#         tmp.Test_Case = line[1]
-#         tmp.FileName = line[2]
-#         tmp.Total_Action = line[4]
-#         tmp.Pass = line[5]
-#         tmp.Fail = line[6]
-#         tmp.Exe_Time = line[7]
-#         tmp.Result = line[8]
-#         tmp.save()
+    #Column Chart 2
+    ds1 = DataPool(
+       series=
+        [{'options': {
+            'source': racktestresult.objects.all()},
+          'terms': [
+            'TotalConditions',
+            'BoxType',
+            'Result',
+            'PassNumbers',
+            'idTestResult',
+            'ExecutionTime',
+            'TestCaseID', 
+            'FailNumbers']}
+         ])
 
-#     f.close()
-#     assert isinstance(request, HttpRequest)
-#     return render(
-#         request,
-#         "app/layout.html",
-#         RequestContext(request,
-#         {
-#             "title":"CSV",
-#         })
-#     )
+    cht2= Chart(
+        datasource = ds1, 
+        series_options = 
+          [{'options':{
+              'type': 'column',
+              'stacking': True},
+            'terms':{
+              'TestCaseID': [
+                'ExecutionTime']
+              }}],
+        chart_options = 
+          {'title': {
+               'text': 'Test Execution Time'},
+           'xAxis': {
+                'title': {
+                   'text': 'Test Case Name'}}})
 
-def Reports(request):
-    assert isinstance(request, HttpRequest)
+    #Pie Chart
+    revodata = DataPool(
+       series=
+        [{'options': {
+            'source': racktestresult.objects.all()},
+          'terms': [
+            'TotalConditions',
+            'Date',
+            'Author',
+            'Result',
+            'BoxType',
+            'PassNumbers',
+            'TestCaseID',
+            'idTestResult',
+            'ExecutionTime',
+            'ProjectName',
+            'SuiteName',
+            'FailNumbers']}
+         ])
+
+    cht3 = Chart(
+            datasource = revodata, 
+            series_options = 
+              [{'options':{
+                  'type': 'pie',
+                  'stacking': False},
+                'terms':{
+                  'SuiteName': [
+                    'FailNumbers',]
+                  }}],
+            chart_options = 
+              {'title': {
+               'text': 'Test Suite Failures'},
+                   })
+
     return render(
         request,
-        "app/Reports.html",
-        RequestContext(request,
+        "app/reports.html",
         {
-            "title":"Reports",
-            "message":"Stuff about Reports goes here.",
-            "year":datetime.now().year,
-        })
+        'revochart': [cht, cht2, cht3],
+        }
     )
+
+
 
 def Json(request):
     assert isinstance(request, HttpRequest)

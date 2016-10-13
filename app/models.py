@@ -26,15 +26,39 @@ class Revo(models.Model):
     SuiteName = models.CharField(max_length=255)
     Test_Case = models.CharField(max_length=255)
     FileName = models.CharField(max_length=255)
-    Total_Action = models.CharField(max_length=255)
-    Pass = models.CharField(max_length=255)
-    Fail = models.CharField(max_length=255)
-    Exe_Time = models.CharField(max_length=255)
+    Total_Action = models.IntegerField()
+    Pass = models.IntegerField()
+    Fail = models.IntegerField()
+    Exe_Time = models.TimeField(blank=True, null=True)
     Result = models.CharField(max_length=255)
     create_date = models.DateTimeField(default=datetime.datetime.now)
 
     class Meta:
         verbose_name_plural = "Revo"
+
+
+class racktestresult(models.Model):
+    idTestResult = models.IntegerField()
+    Date = models.DateTimeField()
+    ProjectName = models.CharField(max_length=255)
+    TestJobName = models.CharField(max_length=255)
+    TestJobExecutionId = models.CharField(max_length=255)
+    SuiteName = models.CharField(max_length=255)
+    TestCaseID = models.CharField(max_length=255)
+    Author = models.CharField(max_length=255)
+    Tester = models.CharField(max_length=255)
+    BoxType = models.CharField(max_length=255)
+    BoxUnitAddress = models.CharField(max_length=255)
+    BoxIP = models.CharField(max_length=255)
+    TotalActions = models.IntegerField()
+    TotalConditions = models.IntegerField()
+    PassNumbers = models.IntegerField()
+    FailNumbers = models.IntegerField()
+    Result = models.CharField(max_length=255)
+    ExecutionTime = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Rack Test Result"
 
 
 class Set_Top_Box(models.Model):           
@@ -53,6 +77,6 @@ class Test_Suite(models.Model):
     class Meta:
         verbose_name_plural = "Test Suite"
 
-    def __unicode__(self):
+    def __unicode__(self): 
             return self.Test_Suite_Name
 

@@ -33,7 +33,7 @@ urlpatterns = patterns("",
 
 ## Revo's
 
-    url(r"^Revo", "app.views.Revo", name="Revo"),
+    url(r"^Revo", "app.views.Revo_view", name="Revo"),
 
 #SetTopBox
     url(r"^Set_Top_Box", "app.views.GetSerialNum", name="Set_Top_Box"),
@@ -50,7 +50,7 @@ urlpatterns = patterns("",
     url(r"^Appium", "app.views.Appium", name="Appium"),
 
 ## Report's
-    url(r"^Reports", "app.views.Reports", name="Reports"),
+    url(r"^Reports", "app.views.reports_chart_view", name="Reports"),
 
 ##Admin
     url(r"^admin/", include(admin.site.urls)),
