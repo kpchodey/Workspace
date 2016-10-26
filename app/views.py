@@ -27,9 +27,13 @@ import json as simplejson
 from chartit import DataPool, Chart
 from django.db.models import Avg
 from chartit import PivotDataPool, PivotChart
+import datetime
+from django.db.models import Sum, Avg, Count
+from chartit import PivotChart, PivotDataPool
+from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
 
 
-# @login_required
 def home(request):
     assert isinstance(request, HttpRequest)
     return render(
@@ -38,14 +42,12 @@ def home(request):
         RequestContext(request,
         {
             "title":"Home Page",
-            "year":datetime.now().year,
         })
     )
 
-#################
-## Revo Views ##
-#################
-# @login_required
+########################
+## Start: Revo Views  ##
+########################
 def Revo_view(request):
     if request.method == 'POST':
         form = NameForm(request.POST)
@@ -67,39 +69,166 @@ def Revo_view(request):
     TestSuite = ', '.join(list1)
     # TestSuite1 = "REG_AGREED_SUITE02"
     report_location = "C:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports"
+
+    # mycommand2 = cd1 + test_runner_path2 + "\n" + STB + "\n" + TestSuite + "\nTrue \n" + report_location + cd2
+    mycommand2 = cd1 + "import time"+"\n" + "time.sleep(6)" + cd2
+    # print "mycommand1",mycommand1
+    print "mycommand2", mycommand2
+
+    myNewJob = STB
+    myXML = "<?xml version='1.0' encoding='UTF-8'?><project><actions/><description></description><keepDependencies>false</keepDependencies><properties/><scm class='hudson.scm.NullSCM'/><canRoam>true</canRoam><disabled>false</disabled><blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding><blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding><triggers/><concurrentBuild>false</concurrentBuild><builders><hudson.plugins.python.Python plugin='python@1.3'><command>RawComamnd</command></hudson.plugins.python.Python></builders><publishers/><buildWrappers/></project>"
+
     j = jenkins.Jenkins('http://localhost:8080', 'jenkins', 'jenkins123')
 
-    # mycommand1 = cd1 + test_runner_path + "\n" + STB + "\n" + TestSuite1 + "\nTrue \n" + report_location + cd2
-    mycommand2 = cd1 + test_runner_path2 + "\n" + STB + "\n" + TestSuite + "\nTrue \n" + report_location + cd2
-    mycommand3 = cd1 + "super" + cd2
-    # print "mycommand1",mycommand1
+    if not j.job_exists(myNewJob):
+        j.create_job(myNewJob, myXML)
+        j.enable_job(myNewJob)
+        jobConfig = j.get_job_config(myNewJob)
+        ###### print "Before RECONFIG"
+        ###### print j.get_job_config(myNewJob)
 
-    print "mycommand2",mycommand2
+        ######Start: to retrieve previous command######
+        tree = ET.XML(jobConfig)
+        with open("temp.xml", "w") as f:
+            f.write(ET.tostring(tree))
 
-    jobConfig = j.get_job_config('sample')
+        document = parse('temp.xml')
+        actors = document.getElementsByTagName("command")
 
-    tree = ET.XML(jobConfig)
-    with open("temp.xml", "w") as f:
-        f.write(ET.tostring(tree))
+        for act in actors:
+            for node in act.childNodes:
+                if node.nodeType == node.TEXT_NODE:
+                    r = "{}".format(node.data)
 
-    document = parse('temp.xml')
-    actors = document.getElementsByTagName("command")
+        prev_command = cd1 + r + cd2
+        ######End: to retrieve previous command######
 
-    for act in actors:
-        for node in act.childNodes:
-            if node.nodeType == node.TEXT_NODE:
-                r = "{}".format(node.data)
+        shellCommand = jobConfig.replace(prev_command, mycommand2)
+        j.reconfig_job(myNewJob, shellCommand)
 
-    prev_command = cd1 + r + cd2
+        ###### print "RECONFIG"
+        ###### print j.get_job_config(myNewJob)
+
+        j.build_job(myNewJob)
+
+        # #####  Start: code to get job status   ######
+        current_build_number = j.get_job_info(myNewJob)['nextBuildNumber']
+        print "Current Build Number : ", current_build_number
+        print "Job Building In Progress -"
+        time.sleep(15)
+        build_info = j.get_build_info(myNewJob, current_build_number)
+
+        if str(build_info['result']) == 'SUCCESS':
+            print"+++++    BUILD COMPLETED"
+            print build_info['displayName']
+        elif str(build_info['result']) == 'FAILURE':
+            print"XXXXX    BUILD FAILED"
+            print build_info['displayName']
+        elif str(build_info['result']) == 'None':
+            print"......   JOB IN PROGRESS"
+            print build_info['displayName']
+        else:
+            print "HOLA"
+            print build_info['displayName']
+        #####  End: code to get job status   ######
+
+        #####  Start: code to get Job Start Time   ######
+        startTime1 = str(build_info['timestamp'])
+        # print startTime1
+        ####reduce the time by 5 hrs as tfhe jenkin time is coming 5 hrs extra##########
+        startTime1 = int(startTime1) - 18000000
+        startTime2 = float(startTime1) / 1000
+        # print (startTime2)
+        # print time.gmtime(startTime2)
+        print time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(startTime2))
 
 
-    shellCommand = jobConfig.replace(prev_command, mycommand2)
-    j.reconfig_job('sample', shellCommand)
+    else:
+        j.enable_job(myNewJob)
+        jobConfig = j.get_job_config(myNewJob)
+        print "Before RECONFIG"
+        print j.get_job_config(myNewJob)
+        tree = ET.XML(jobConfig)
+        with open("temp.xml", "w") as f:
+            f.write(ET.tostring(tree))
 
+        document = parse('temp.xml')
+        actors = document.getElementsByTagName("command")
 
-    j.build_job('sample')
+        for act in actors:
+            for node in act.childNodes:
+                if node.nodeType == node.TEXT_NODE:
+                    r = "{}".format(node.data)
+
+        prev_command = cd1 + r + cd2
+
+        shellCommand = jobConfig.replace(prev_command, mycommand2)
+        j.reconfig_job(myNewJob, shellCommand)
+
+        print "RECONFIG"
+        print j.get_job_config(myNewJob)
+
+        j.build_job(myNewJob)
+
+        # #####  Start: code to get job status   ######
+        current_build_number = j.get_job_info(myNewJob)['nextBuildNumber']
+        print "Current Build Number : ", current_build_number
+
+        prv_build_number = j.get_job_info(myNewJob)['lastBuild']['number']
+        print "Last Build Number :", prv_build_number
+
+        i = 0
+        while current_build_number != prv_build_number:
+            print "Job Building In Progress -", i
+            time.sleep(2)
+            i = i + 1
+            prv_build_number = j.get_job_info(myNewJob)['lastBuild']['number']
+        else:
+            print "Job completed -", current_build_number
+
+        build_info = j.get_build_info(myNewJob, current_build_number)
+
+        if str(build_info['result']) == 'SUCCESS':
+            print"+++++    BUILD COMPLETED"
+            status = "JOB COMPLETED"
+            print build_info['displayName']
+        elif str(build_info['result']) == 'FAILURE':
+            print"XXXXX    BUILD FAILED"
+            status = "JOB FAILED"
+            print build_info['displayName']
+        elif str(build_info['result']) == 'None':
+            print"......   JOB IN PROGRESS"
+            status = "JOB IN PROGRESS"
+            print build_info['displayName']
+        else:
+            print "HOLA"
+            print build_info['displayName']
+        #####  End: code to get job status   ######
+
+        #####  Start: code to get Job Start Time   ######
+        startTime1 = str(build_info['timestamp'])
+        # print startTime1
+        ####reduce the time by 5 hrs as tfhe jenkin time is coming 5 hrs extra##########
+        startTime1 = int(startTime1) - 18000000
+        startTime2 = float(startTime1) / 1000
+        # print (startTime2)
+        # print time.gmtime(startTime2)
+        print time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(startTime2))
+        #####  Start: code to get Job Start Time   ######
+
+        logToJobFile(str(STB)+","+str(current_build_number)+","+str(status)+","+time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(startTime2)))
+
+        return HttpResponseRedirect("home")
+
 
     return render(request, 'app/layout.html', {'form': form})
+########################
+## End: Revo Views  ##
+########################
+
+def logToJobFile(abc):
+    logFile = open("CreatedJobsFile.csv", "a+")
+    logFile.write(abc + "\n")
 
 
 
@@ -220,13 +349,89 @@ def GetSerialNum(request):
         })
     )
 
+def createJsonFile(fileName):
+    f = open(fileName, 'r')
+    jsonfile = open('app/templates/app/JobStatusFile.json', 'w')
+    reader = csv.DictReader(f, fieldnames=("Job No", "Build No", "Result", "StartTime", "EndTime", "Duration"))
+    out = "[\n\t" + ",\n\t".join([json.dumps(row) for row in reader]) + "\n]"
+    jsonfile.write(out)
+
+########Ashish(Start): Get the status of the jobs when REFRESH button is pressed########
+def getJobStatus(request):
+    import csv
+    import jenkins
+    import urllib2
+    import urllib
+    import sys
+    import json
+    import ast
+    import time
+
+    j = jenkins.Jenkins('http://localhost:8080', 'jenkins', 'jenkins123')
+
+    f = open("CreatedJobsFile.csv", "r")
+    m = open("JobStatusFile.csv", "w")
+    reader = csv.reader(f)
+    writer = csv.writer(m)
+    for row in reader:
+        build_info = j.get_build_info(str(row[0]), int(row[1]))
+        StartTime = time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(((int(build_info['timestamp'])) - 18000000) / 1000))
+
+        if str(build_info['result']) == 'None':
+            result = "IN PROGRESS"
+            EndTime = "-------"
+            Duration = "-------"
+        else:
+            result = build_info['result']
+            EndTime = time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(((int(build_info['timestamp'])+int(build_info['duration'])-18000000)/1000)))
+            Duration= int(build_info['duration'])/1000
+
+        print row[0], row[1], result, StartTime, EndTime, str(Duration)
+        m.write(row[0] + "," + row[1] + "," + result + "," + StartTime + "," + EndTime + "," + str(Duration) + " Secs" + "\n")
+
+    f.close()
+    m.close()
+    createJsonFile("JobStatusFile.csv")
+
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        "app/JobStatusFile.json",
+        RequestContext(request,
+                       {
+                       })
+    )
+########Ashish(End): Get the status of the jobs when REFRESH button is pressed########
+
+
+########Ashish(Start): Kill the selected jobs ########
+def stopJob(request):
+    print "KILL BILL"
+    # print "a:",request
+    # print "Method:", request.method
+    # print "Method:", request.GET
+    print "***Job***", request.GET['job']
+    print "***Build***", request.GET['build']
+    # < WSGIRequest: GET '/stopJob?name=STB+1&time=9' >
+    # print printgetattr(request.job);
+    j = jenkins.Jenkins('http://localhost:8080', 'jenkins', 'jenkins123')
+    j.stop_build(request.GET['job'],request.GET['build'])
+    assert isinstance(request, HttpRequest)
+    return render(
+        request,
+        "app/JobStatusFile.json",
+        RequestContext(request,
+                       {
+                       })
+    )
+########Ashish(End): Kill the selected jobs ##########
 
 @login_required
 def Storm(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        "app/Storm/Storm.html",
+        "app/layout.html",
         RequestContext(request,
         {
             "title":"Storm",
@@ -235,15 +440,15 @@ def Storm(request):
         })
     )
 
+
 #################
 ## Appium Views ##
 #################
-# @login_required
 def Appium(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        "app/Appium/Appium.html",
+        "app/layout.html",
         RequestContext(request,
         {
             "title":"Appium",
@@ -253,13 +458,36 @@ def Appium(request):
     )
 
 
+##################
+## Graphs Views ##
+##################
 def reports_chart_view(request):
-
+    error = False
+    print "hello1"
+    if 'q1' and 'q2'in request.GET:
+        print "hello2"
+        q1 = request.GET['q1']
+        q2 = request.GET['q2']
+        date_from = datetime.datetime.strptime(request.GET['q1'], '%Y-%m-%d')
+        print date_from
+        date_to = datetime.datetime.strptime(request.GET['q2'], '%Y-%m-%d')
+        print date_to
+        if not q1:
+            error = True
+        elif not q2:
+            error = True
+        else:
+            date_from = datetime.date(2016, 9, 21)
+            date_to = datetime.date(2016, 9, 23)
+            print "STATIC DATE FROM", date_from
+            print "STATIC DATE TO",date_to
+    date_from = datetime.date(2016, 9, 21)
+    date_to = datetime.date(2016, 9, 21)
     #Column Chart 1   
     ds = DataPool(
        series=
         [{'options': {
-            'source': racktestresult.objects.all()},
+            'source': racktestresult.objects.filter(Date__range = ('2016-09-21','2016-09-26'))},
           'terms': [
             'TotalConditions',
             'BoxType',
@@ -294,7 +522,7 @@ def reports_chart_view(request):
     ds1 = DataPool(
        series=
         [{'options': {
-            'source': racktestresult.objects.all()},
+            'source': racktestresult.objects.filter(Date__range = (date_from, date_from))},
           'terms': [
             'TotalConditions',
             'BoxType',
@@ -327,7 +555,7 @@ def reports_chart_view(request):
     revodata = DataPool(
        series=
         [{'options': {
-            'source': racktestresult.objects.all()},
+            'source': racktestresult.objects.filter(Date__range=(date_from, date_to))},
           'terms': [
             'TotalConditions',
             'Date',
@@ -358,27 +586,56 @@ def reports_chart_view(request):
                'text': 'Test Suite Failures'},
                    })
 
+
+############New chart#############
+    # Pie Chart4
+    ds = DataPool(
+        series=[
+            {
+                'options': {
+                'source': racktestresult.objects.filter(Date__range = ('2016-10-21','2016-10-26'))},
+                'terms': [
+                    'PassNumbers','FailNumbers']},
+                ]
+
+
+    )
+
+    cht4 = Chart(
+        datasource=ds,
+        series_options=[
+            {
+                'options': {
+                    'type': 'pie',
+                    'stacking': False,
+                    'options3d': {'enabled': True, 'alpha': 45, 'beta': 0}
+                }, 'terms': {
+                'PassNumbers':['FailNumbers']}}]
+        ,
+        chart_options={
+            'title': {'text': 'Pass/Date - Pie Chart'}
+        }
+    )
+
     return render(
         request,
         "app/reports.html",
         {
-        'revochart': [cht, cht2, cht3],
+            'revochart': [cht, cht2, cht3, cht4],
         }
     )
-
 
 
 def Json(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
-        #"app/STBSampleJson.json",
         "app/temp1.json",
         RequestContext(request,
         {
-
         })
     )
+
 
 
 def register(request):

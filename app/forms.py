@@ -29,11 +29,3 @@ class UserForm(forms.ModelForm):
 
 class NameForm(forms.Form):
     print "I am in forms"
-
-# class racktestresultTimeForm(forms.ModelForm):
-
-#     class Meta:
-#         model = racktestresult
-#         widgets = {
-#             'Date': forms.DateInput(attrs={'class':'datepicker'}),
-#         }
