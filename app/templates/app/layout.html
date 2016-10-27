@@ -50,7 +50,7 @@
     function stb1(job1, build1){
             alert (job1);
             alert (build1);
-            $.get("stopJob",{ job: 'sample', build: 323 },function(result){
+            $.get("stopJob",{ job: job1, build: build1 },function(result){
              });
         }
 
@@ -59,7 +59,22 @@
     $.getJSON("JobStatus", function(result){
           $("#testdataid").empty();
             $.each(result, function(i, item){
-                $("#testdataid").append("<tr><td>"+item["Job No"]+"</td><td>" + item.Result + "</td><td>" + item.StartTime + "</td><td>" + item.EndTime + "</td><td>" + item.Duration +" </td><td data-editable=\"true\"><button onclick=\"stb1('"+item["Job No"]+"',"+item["Build No"]+")\" data-role=\"button\" class=\"btn_stop btn btn-danger\">Stop</button></td><td data-editable=\"true\"><a href=\"#\">REPORT LINK</a></td></tr>");
+            if(item.Result == "SUCCESS"){
+            colorclass = "available";
+            }
+            if(item.Result == "FAILURE"){
+            colorclass = "offline";
+            }
+            if(item.Result == "IN PROGRESS"){
+            colorclass = "in_progress";
+            }
+            if(item.Result == "JOB IN QUEUE"){
+            colorclass = "in_queue";
+            }
+            if(item.Result == "ABORTED"){
+            colorclass = "aborted";
+            }
+                $("#testdataid").append("<tr><td>"+item["Job No"]+"</td><td>"+item["Suite Name"]+"</td><td>"+item["Build No"]+"</td><td><p class = " + colorclass + ">" + item.Result + "</p></td><td>" + item.StartTime + "</td><td>" + item.EndTime + "</td><td>" + item.Duration +" </td><td data-editable=\"true\"><button onclick=\"stb1('"+item["Job No"]+"',"+item["Build No"]+")\" data-role=\"button\" class=\"btn_stop btn btn-danger\">Stop</button></td><td data-editable=\"true\"><a href=\"#\">REPORT LINK</a></td></tr>");
             });
         }); }
 
@@ -174,56 +189,65 @@
 
             <div class="col-md-3">
                 <div class="quote-box runquote">
-                    
-        <script type="text/javascript">
-            function show_alert()
-            {
-            alert("Run Successful!");
-            }
-        </script>
+                    <script type="text/javascript">
+          function show_alert()
+          {
+          alert("Run Successful!");
+          }
+          </script>
                     <input type="image" name="submit" img src="{% static 'app/images/run.png' %}" alt="Submit" />
                 </div>
             </div>
         </form>
 
         <div class="col-md-12 divsub">
-            
             <div class="quote-box">
-                <div class="quote-text scroller">
+            <div class="quote-text scroller">
                 <table class="table job-status_table" data-sorting="true">
-                    <thead>
-                    <tr>
-                        <th ><p class = "quotation-mark"> JOB NAME</p></th>
-                        <th ><p class = "quotation-mark"> STB NAME</p></th>
-                        <th ><p class = "quotation-mark"> JOB START TIME</p></th>
-                        <th ><p class = "quotation-mark"> JOB END TIME</p></th>
-                        <th ><p class = "quotation-mark" data-sortable="false">JOB STATUS</p></th>
-                        <th ><p class = "quotation-mark" data-sortable="false">STOP JOB</p></th>
-                        <th ><p class = "quotation-mark" data-sortable="false">
-                            REPORTS &nbsp; &nbsp;<i class="fa fa-refresh" aria-hidden="true" style="cursor: pointer" onclick="stbststus1()"></i>
-                        </p></th>
-                    </tr>
-                    </thead>
-                    <tbody class="Result" id="testdataid">
-                    <style>
-            .progress.active .progress-bar {
-            -webkit-transition: none !important;
-            transition: none !important;
-          }
-          </style>
 
-                    </tbody>
+                        <thead>
+                        <tr>
+                            <th ><p class = "quotation-mark"> JOB NAME</p></th>
+                            <th ><p class = "quotation-mark"> SUITE NAME</p></th>
+                            <th ><p class = "quotation-mark"> BUILD #</p></th>
+                            <th ><p class = "quotation-mark"> RESULT</p></th>
+                            <th ><p class = "quotation-mark"> JOB START TIME</p></th>
+                            <th ><p class = "quotation-mark"> JOB END TIME</p></th>
+                            <th ><p class = "quotation-mark" data-sortable="false">DURATION</p></th>
+                            <th ><p class = "quotation-mark" data-sortable="false">STOP JOB</p></th>
+                            <th ><p class = "quotation-mark" data-sortable="false">
+                                REPORTS &nbsp; &nbsp;<i class="fa fa-refresh" aria-hidden="true" style="cursor: pointer" onclick="stbststus1()"></i>
+                            </p></th>
+                        </tr>
+                        </thead>
+
+                            <tbody class="Result" id="testdataid">
+                            <style>
+                                .progress.active .progress-bar {
+                                -webkit-transition: none !important;
+                                transition: none !important;
+                            }
+                            </style>
+                            </tbody>
+
                 </table>
-                </div>
+            </div>
             </div>
         </div>
 
     </div>
 </div>
 
+
+
+
+
+
 </div>
 </section>
 
+
+<!--test summary -->
 <footer id="footer">
     <div class="container">
         <div class="row">
@@ -233,6 +257,8 @@
         </div>
     </div>
 </footer>
+
+
 
 <script>
     function goLoad(){

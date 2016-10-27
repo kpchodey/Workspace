@@ -36,8 +36,23 @@ body  {
   color: #cd040b
 }
 
+.in_progress{
+  color: #ffbf00;
+}
+.in_queue{
+  color: #0000ff
+}
+
+.aborted{
+  color: #ff3030
+}
 .In.use{
   color:#F9FF00;
+}
+
+.job-status_table p,
+#testdataid td{
+    text-align: center;
 }
 
 /* Background images are set within the HTML using inline CSS, not here */

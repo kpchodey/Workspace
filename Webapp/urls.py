@@ -12,7 +12,7 @@ urlpatterns = patterns("",
     url(r"^home", "app.views.home", name="home"),
 
 ##Home
-    url(r"Jenkins", "app.views.home", name="Jenkins"),
+    url(r"^$", "app.views.home", name="home"),
     
 ##User Stuff
     url(r"^user/login/$",
@@ -38,9 +38,6 @@ urlpatterns = patterns("",
 
     url(r"^Revo", "app.views.Revo_view", name="Revo"),
 
-##Home
-    url(r"^$", "app.views.home", name="Done"),
-
 #SetTopBox
     url(r"^Set_Top_Box", "app.views.GetSerialNum", name="Set_Top_Box"),
 
@@ -59,10 +56,6 @@ urlpatterns = patterns("",
 ## StopStatus's
 
     url(r"^stopJob", "app.views.stopJob", name="stopJob"),
-
-## Date Picker's
-
-    # url(r"^Datepicker", "app.views.search", name="Datepicker"),
 
 ## Appium's
     url(r"^Appium", "app.views.Appium", name="Appium"),

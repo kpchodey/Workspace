@@ -33,7 +33,6 @@ from chartit import PivotChart, PivotDataPool
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 
-
 def home(request):
     assert isinstance(request, HttpRequest)
     return render(
@@ -71,8 +70,7 @@ def Revo_view(request):
     report_location = "C:\git_new\evo_automation\ tests\TestRunner\ReportFile C:\git_new\evo_automation\ reports"
 
     # mycommand2 = cd1 + test_runner_path2 + "\n" + STB + "\n" + TestSuite + "\nTrue \n" + report_location + cd2
-    mycommand2 = cd1 + "import time"+"\n" + "time.sleep(6)" + cd2
-    # print "mycommand1",mycommand1
+    mycommand2 = cd1 + "import time"+"\n" + "time.sleep(500)" + cd2
     print "mycommand2", mycommand2
 
     myNewJob = STB
@@ -178,48 +176,54 @@ def Revo_view(request):
         print "Last Build Number :", prv_build_number
 
         i = 0
-        while current_build_number != prv_build_number:
-            print "Job Building In Progress -", i
+        while (i < 6) and (current_build_number != prv_build_number):
+            print "Status In Progress -", i
             time.sleep(2)
             i = i + 1
-            prv_build_number = j.get_job_info(myNewJob)['lastBuild']['number']
+            prv_build_number = j.get_job_info('sample')['lastBuild']['number']
         else:
             print "Job completed -", current_build_number
 
-        build_info = j.get_build_info(myNewJob, current_build_number)
+        try:
 
-        if str(build_info['result']) == 'SUCCESS':
-            print"+++++    BUILD COMPLETED"
-            status = "JOB COMPLETED"
-            print build_info['displayName']
-        elif str(build_info['result']) == 'FAILURE':
-            print"XXXXX    BUILD FAILED"
-            status = "JOB FAILED"
-            print build_info['displayName']
-        elif str(build_info['result']) == 'None':
-            print"......   JOB IN PROGRESS"
-            status = "JOB IN PROGRESS"
-            print build_info['displayName']
-        else:
-            print "HOLA"
-            print build_info['displayName']
+            build_info = j.get_build_info(myNewJob, current_build_number)
+            startTime1 = str(build_info['timestamp'])
+            # print startTime1
+            ####reduce the time by 5 hrs as tfhe jenkin time is coming 5 hrs extra##########
+            startTime1 = int(startTime1) - 18000000
+            startTime2 = float(startTime1) / 1000
+            # print (startTime2)
+            # print time.gmtime(startTime2)
+            print time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(startTime2))
+            #####  Start: code to get Job Start Time   ######
+            if str(build_info['result']) == 'SUCCESS':
+                print"+++++    BUILD COMPLETED"
+                status = "JOB COMPLETED"
+                print build_info['displayName']
+            elif str(build_info['result']) == 'FAILURE':
+                print"XXXXX    BUILD FAILED"
+                status = "JOB FAILED"
+                print build_info['displayName']
+            elif str(build_info['result']) == 'None':
+                print"......   JOB IN PROGRESS"
+                status = "JOB IN PROGRESS"
+                print build_info['displayName']
+            else:
+                print "HOLA"
+                print build_info['displayName']
+        except jenkins.NotFoundException:
+            print "......JOB IN QUEUE"
+            status = "JOB IN QUEUE"
+            startTime2 = 000000
+            pass
         #####  End: code to get job status   ######
 
         #####  Start: code to get Job Start Time   ######
-        startTime1 = str(build_info['timestamp'])
-        # print startTime1
-        ####reduce the time by 5 hrs as tfhe jenkin time is coming 5 hrs extra##########
-        startTime1 = int(startTime1) - 18000000
-        startTime2 = float(startTime1) / 1000
-        # print (startTime2)
-        # print time.gmtime(startTime2)
-        print time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(startTime2))
-        #####  Start: code to get Job Start Time   ######
 
-        logToJobFile(str(STB)+","+str(current_build_number)+","+str(status)+","+time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(startTime2)))
+
+        logToJobFile(str(STB)+","+str(TestSuite)+","+str(current_build_number)+","+str(status)+","+time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(startTime2)))
 
         return HttpResponseRedirect("home")
-
 
     return render(request, 'app/layout.html', {'form': form})
 ########################
@@ -336,7 +340,6 @@ def GetSerialNum(request):
         reader = csv.DictReader(f, fieldnames=("STBSno", "STBLabel", "RouterSNo", "STBStatus"))
         out = "[\n\t" + ",\n\t".join([json.dumps(row) for row in reader]) + "\n]"
         jsonfile.write(out)
-
     assert isinstance(request, HttpRequest)
     return render(
         request,
@@ -352,7 +355,7 @@ def GetSerialNum(request):
 def createJsonFile(fileName):
     f = open(fileName, 'r')
     jsonfile = open('app/templates/app/JobStatusFile.json', 'w')
-    reader = csv.DictReader(f, fieldnames=("Job No", "Build No", "Result", "StartTime", "EndTime", "Duration"))
+    reader = csv.DictReader(f, fieldnames=("Job No","Suite Name", "Build No", "Result", "StartTime", "EndTime", "Duration"))
     out = "[\n\t" + ",\n\t".join([json.dumps(row) for row in reader]) + "\n]"
     jsonfile.write(out)
 
@@ -374,20 +377,24 @@ def getJobStatus(request):
     reader = csv.reader(f)
     writer = csv.writer(m)
     for row in reader:
-        build_info = j.get_build_info(str(row[0]), int(row[1]))
-        StartTime = time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(((int(build_info['timestamp'])) - 18000000) / 1000))
+        try:
+            build_info = j.get_build_info(str(row[0]), int(row[2]))
+            StartTime = time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(((int(build_info['timestamp'])) - 18000000) / 1000))
 
-        if str(build_info['result']) == 'None':
-            result = "IN PROGRESS"
-            EndTime = "-------"
-            Duration = "-------"
-        else:
-            result = build_info['result']
-            EndTime = time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(((int(build_info['timestamp'])+int(build_info['duration'])-18000000)/1000)))
-            Duration= int(build_info['duration'])/1000
+            if str(build_info['result']) == 'None':
+                result = "IN PROGRESS"
+                EndTime = "-------"
+                Duration = "-------"
+            else:
+                result = build_info['result']
+                EndTime = time.strftime('%m/%d/%Y %H:%M:%S', time.gmtime(((int(build_info['timestamp'])+int(build_info['duration'])-18000000)/1000)))
+                Duration= int(build_info['duration'])/1000
+        except jenkins.NotFoundException:
+            result = "JOB IN QUEUE"
+            pass
 
-        print row[0], row[1], result, StartTime, EndTime, str(Duration)
-        m.write(row[0] + "," + row[1] + "," + result + "," + StartTime + "," + EndTime + "," + str(Duration) + " Secs" + "\n")
+        # print row[0], row[1],row[2], result, StartTime, EndTime, str(Duration)
+        m.write(row[0] + "," + row[1] + ","+row[2]+","+ result + "," + StartTime + "," + EndTime + "," + str(Duration) + " Secs" + "\n")
 
     f.close()
     m.close()
@@ -464,30 +471,36 @@ def Appium(request):
 def reports_chart_view(request):
     error = False
     print "hello1"
-    if 'q1' and 'q2'in request.GET:
+    if 'q1' and 'q2' in request.GET:
         print "hello2"
         q1 = request.GET['q1']
         q2 = request.GET['q2']
-        date_from = datetime.datetime.strptime(request.GET['q1'], '%Y-%m-%d')
-        print date_from
-        date_to = datetime.datetime.strptime(request.GET['q2'], '%Y-%m-%d')
-        print date_to
+
+        # date_from_2 = datetime.datetime.strptime(request.GET['q1'], '%Y-%m-%d')
+        # print "a", date_from_2
+        # date_to_2 = datetime.datetime.strptime(request.GET['q2'], '%Y-%m-%d')
+        # print "b", date_to_2
         if not q1:
             error = True
         elif not q2:
             error = True
         else:
-            date_from = datetime.date(2016, 9, 21)
-            date_to = datetime.date(2016, 9, 23)
-            print "STATIC DATE FROM", date_from
-            print "STATIC DATE TO",date_to
-    date_from = datetime.date(2016, 9, 21)
-    date_to = datetime.date(2016, 9, 21)
+            date_from_1 = datetime.date(2016, 9, 21)
+            date_to_1 = datetime.date(2016, 9, 23)
+            print "STATIC DATE FROM", q1
+            print "STATIC DATE TO",q2
+
+    date_from = '2016-09-01'#request.GET['q1']
+    date_to =  '2016-10-30'#request.GET['q2']
+
+    # date_from = request.GET['q1']
+    # date_to = request.GET['q2']
+
     #Column Chart 1   
     ds = DataPool(
        series=
         [{'options': {
-            'source': racktestresult.objects.filter(Date__range = ('2016-09-21','2016-09-26'))},
+            'source': racktestresult.objects.filter(Date__range = (date_from, date_to))},
           'terms': [
             'TotalConditions',
             'BoxType',
@@ -522,7 +535,7 @@ def reports_chart_view(request):
     ds1 = DataPool(
        series=
         [{'options': {
-            'source': racktestresult.objects.filter(Date__range = (date_from, date_from))},
+            'source': racktestresult.objects.filter(Date__range = (date_from, date_to))},
           'terms': [
             'TotalConditions',
             'BoxType',
@@ -593,7 +606,7 @@ def reports_chart_view(request):
         series=[
             {
                 'options': {
-                'source': racktestresult.objects.filter(Date__range = ('2016-10-21','2016-10-26'))},
+                'source': racktestresult.objects.filter(Date__range = (date_from, date_to))},
                 'terms': [
                     'PassNumbers','FailNumbers']},
                 ]
@@ -617,6 +630,9 @@ def reports_chart_view(request):
         }
     )
 
+
+
+
     return render(
         request,
         "app/reports.html",
@@ -624,6 +640,20 @@ def reports_chart_view(request):
             'revochart': [cht, cht2, cht3, cht4],
         }
     )
+# def search(request):
+#     error = False
+#     if 'q1' and 'q2'in request.GET:
+#         q1 = request.GET['q1']
+#         q2 = request.GET['q2']
+#         if not q1:
+#             error = True
+#         elif not q2:
+#             error = True
+#         else:
+#             books = racktestresult.objects.filter(Date__range=(q1,q2))
+#             return render(request, 'app/reports.html',
+#                 {'books': books })
+#     return render(request, 'app/reports.html', {'error': error})
 
 
 def Json(request):
